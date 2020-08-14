@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonClassLibrary", "CommonClassLibrary\CommonClassLibrary.csproj", "{727A18F8-9BA9-4582-85F9-F88F7C59B0CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BF_CustomTools", "BF_CustomTools\BF_CustomTools.csproj", "{F6C0F015-3466-4D54-A270-CBE44D446E34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{727A18F8-9BA9-4582-85F9-F88F7C59B0CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{727A18F8-9BA9-4582-85F9-F88F7C59B0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{727A18F8-9BA9-4582-85F9-F88F7C59B0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{727A18F8-9BA9-4582-85F9-F88F7C59B0CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6C0F015-3466-4D54-A270-CBE44D446E34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6C0F015-3466-4D54-A270-CBE44D446E34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6C0F015-3466-4D54-A270-CBE44D446E34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6C0F015-3466-4D54-A270-CBE44D446E34}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EA188362-DE15-4FD0-938B-20C8A940A112}
+	EndGlobalSection
+EndGlobal
