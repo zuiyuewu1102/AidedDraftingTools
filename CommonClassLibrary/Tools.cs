@@ -421,7 +421,7 @@ namespace CommonClassLibrary
             double xangle = (vector1.Angle + vector2.Angle - Math.PI) / 2;
             double zjxc = Math.Abs(0.5 / Math.Sin(vector1.Angle - xangle));
             double sina1 = Math.Sin(vector1.Angle);
-            double cosa1 = Math.Cos(vector1.Angle);            
+            double cosa1 = Math.Cos(vector1.Angle);
             double xc = t / Math.Sin(vector1.Angle - xangle);
 
             List<Point2d> points = new List<Point2d>
@@ -457,17 +457,14 @@ namespace CommonClassLibrary
                 Vector2d vector3 = lsPt4 - lsPt3;
                 double xangle1 = (vector2.Angle - vector1.Angle - Math.PI) / 2 + vector1.Angle;
                 double xangle2 = (vector3.Angle - vector2.Angle - Math.PI) / 2 + vector2.Angle;
-                double zjxc1 = 0.5 / Math.Sin(vector1.Angle-xangle1);
-                double zjxc2 = 0.5 / Math.Sin(vector2.Angle-xangle2);
-                //double sina1 = Math.Sin(vector2.Angle);
-                //double cosa1 = Math.Cos(vector2.Angle);
-                
                 double xc1 = t / Math.Sin(vector1.Angle - xangle1);
                 double xc2 = t / Math.Sin(vector2.Angle - xangle2);
+                double jxcd1 =Math.Abs( 0.5 / Math.Sin(vector1.Angle - xangle1));
+                double jxcd2 = Math.Abs(0.5 / Math.Sin(vector2.Angle - xangle2));
                 List<Point2d> lspoints = new List<Point2d>
                 {
-                    lsPt2.Polar(vector2.Angle,zjxc1),
-                    lsPt3.Polar(vector2.Angle,zjxc2)
+                    lsPt2.Polar(vector2.Angle ,jxcd1),
+                    lsPt3.Polar(vector2.Angle,-jxcd2)
                 };
                 lspoints.Add(lspoints[1].Polar(xangle2, xc2));
                 lspoints.Add(lspoints[0].Polar(xangle1, xc1));
@@ -491,22 +488,22 @@ namespace CommonClassLibrary
             lsPt3 = new Point2d(pt3.X, pt3.Y);
             Vector2d vector1 = lsPt2 - lsPt1;
             Vector2d vector2 = lsPt3 - lsPt2;
-            double xangle = (vector2.Angle + vector1.Angle - Math.PI) / 2;
-            double zjxc = 0.5 / Math.Sin(xangle);
+            double xangle = (vector2.Angle + vector1.Angle + Math.PI) / 2;
+            double zjxc = Math.Abs(0.5 / Math.Sin(vector1.Angle - xangle));
             double sina = Math.Sin(vector2.Angle);
             double cosa = Math.Cos(vector2.Angle);
             
-            double xc = t / Math.Sin((vector2.Angle + vector1.Angle - Math.PI) / 2);
+            double xc = t / Math.Sin(vector1.Angle - xangle);
 
             List<Point2d> points = new List<Point2d>
             {
-                new Point2d(lsPt2.X + cosa * zjxc, lsPt2.Y + sina * zjxc),
-                new Point2d(lsPt3.X - cosa, lsPt3.Y - sina),
-                new Point2d(lsPt3.X + sina, lsPt3.Y - cosa),
-                new Point2d(lsPt3.X + sina * (t - 1), lsPt3.Y - cosa * (t - 1))
+                lsPt2.Polar(vector2.Angle,zjxc),
+                lsPt3.Polar(vector2.Angle+Math.PI,1),
+                lsPt3.Polar(vector2.Angle+Math.PI*1.5,1),
+                lsPt3.Polar(vector2.Angle+Math.PI*1.5,t-1)
             };
-            points.Add(new Point2d(points[1].X + sina * t, points[1].Y - cosa * t));
-            points.Add(new Point2d(points[0].X - xc * Math.Cos(xangle), points[0].Y - xc * Math.Sin(xangle)));
+            points.Add(points[1].Polar(vector2.Angle + Math.PI * 1.5, t));
+            points.Add(points[0].Polar(xangle, xc));
 
             db.AddPolyLineToModeSpace("BF-玻璃", true, points[0], points[1], points[2], points[3], points[4], points[5]);
         }

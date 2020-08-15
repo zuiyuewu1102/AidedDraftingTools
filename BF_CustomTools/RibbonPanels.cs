@@ -36,8 +36,6 @@ namespace BF_CustomTools
             RibbonPanelSource ribbonPanelSource3 = ribbonTab.AddPanel("绘图工具");//给选项卡添加面板
             ribbonPanelSource3.Items.Add(RibbonButtonInfos.Szc);
         }
-
-        
     }
     public class RibbonButtonEX : RibbonButton
     {
