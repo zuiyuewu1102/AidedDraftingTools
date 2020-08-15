@@ -1171,6 +1171,64 @@ namespace BF_CustomTools
             db.SetCurrentLayer(curLayerName);
         }
 
+        //卡布灯箱剖面
+        [CommandMethod("DXPM")]
+        public void DXPM()
+        {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
+            ed.WriteMessage("百福工具箱——快速绘制卡布灯箱顶剖图");
+            string curLayerName = db.GetCurrentLayerName();
+            Point3d pt1, pt2;
+            PromptPointOptions ppo = new PromptPointOptions("\n请选择起始点");
+            PromptPointResult ppr = ed.GetPoint(ppo);
+            if (ppr.Status == PromptStatus.OK)
+            {
+                pt1 = ppr.Value;
+                PromptPointOptions ppo1;
+                PromptPointResult ppr1;
+                do
+                {
+                    ppo1 = new PromptPointOptions("\n请选择终止点");
+                    ppo1.UseBasePoint = true;
+                    ppo1.BasePoint = pt1;
+                    ppr1 = ed.GetPoint(ppo1);
+                } while (ppr1.Status != PromptStatus.OK);
+                pt2 = ppr1.Value;
+                using (Transaction trans = db.TransactionManager.StartTransaction())
+                {
+                    string blockPath = Tools.GetCurrentPath() + @"\BaseDwgs\铝型材标准块库.dwg";
+
+                    db.ImportBlocksFromDWG(blockPath, "LC156");
+
+                    BlockTable bt = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
+                    BlockTableRecord btr = trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+
+                    if (bt.Has("LC156"))
+                    {
+                        using (BlockReference brf = new BlockReference(pt1, bt["LC156"]))
+                        {
+                            btr.AppendEntity(brf);
+                            trans.AddNewlyCreatedDBObject(brf, true);
+                        }
+
+                        using (BlockReference brf = new BlockReference(pt2, bt["LC156"]))
+                        {
+                            btr.AppendEntity(brf);
+                            trans.AddNewlyCreatedDBObject(brf, true);
+                        }
+                    }
+                    else
+                    {
+                        ed.WriteMessage("\n未在图库中找到图块LC156");
+                    }
+                    trans.Commit();
+                }
+            }           
+
+            db.SetCurrentLayer(curLayerName);
+        }
 
         /*
         public class ClsDrawJigLine : Autodesk.AutoCAD.EditorInput.EntityJig

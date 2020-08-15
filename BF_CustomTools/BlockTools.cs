@@ -357,7 +357,7 @@ namespace BF_CustomTools
                     db.ImportBlocksFromDWG(xckPath, blkname);
 
                     ObjectId spaceId = db.CurrentSpaceId;//获取当前空间（模型空间或图纸空间）
-                    spaceId.InsertBlockReference("0", blkname, pt, new Scale3d(1), 0);
+                    spaceId.InsertBlockReference("BF-灯具", blkname, pt, new Scale3d(1), 0);
 
                     trans.Commit();
                 }

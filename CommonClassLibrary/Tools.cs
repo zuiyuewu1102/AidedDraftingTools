@@ -490,8 +490,8 @@ namespace CommonClassLibrary
             Vector2d vector2 = lsPt3 - lsPt2;
             double xangle = (vector2.Angle + vector1.Angle + Math.PI) / 2;
             double zjxc = Math.Abs(0.5 / Math.Sin(vector1.Angle - xangle));
-            double sina = Math.Sin(vector2.Angle);
-            double cosa = Math.Cos(vector2.Angle);
+            //double sina = Math.Sin(vector2.Angle);
+            //double cosa = Math.Cos(vector2.Angle);
             
             double xc = t / Math.Sin(vector1.Angle - xangle);
 
@@ -758,6 +758,69 @@ namespace CommonClassLibrary
 
             ribbon.ToolTip = ribbonToolTip;
             return ribbonToolTip;
+        }
+
+        /// <summary>
+        /// 复制图形
+        /// </summary>
+        /// <param name="entId">图形的ObjectId</param>
+        /// <param name="sourcePoint">参考起点</param>
+        /// <param name="targetPoint">参考终点</param>
+        /// <returns>图形对象</returns>
+        public static Entity CopyEntity(this ObjectId entId,Point3d sourcePoint,Point3d targetPoint)
+        {
+            //声明一个图形对象
+            Entity entR;
+            Database db = HostApplicationServices.WorkingDatabase;
+            using (Transaction trans = db.TransactionManager.StartTransaction())
+            {
+                //打开块表
+                BlockTable bt = (BlockTable)trans.GetObject(db.BlockTableId, OpenMode.ForRead);
+                //打开块表记录
+                BlockTableRecord btr = (BlockTableRecord)trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
+                //打开图形
+                Entity ent = (Entity)entId.GetObject(OpenMode.ForWrite);
+                //计算变换矩阵
+                Vector3d vector = sourcePoint.GetVectorTo(targetPoint);
+                Matrix3d mt = Matrix3d.Displacement(vector);
+                entR = ent.GetTransformedCopy(mt);
+                //提交事务处理
+                trans.Commit();
+            }
+            return entR;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entId"></param>
+        /// <param name="pt1"></param>
+        /// <param name="pt2"></param>
+        /// <param name="isEraseSoruce"></param>
+        public static Entity MirrorEntity(this ObjectId entId,Point3d pt1,Point3d pt2,bool isEraseSoruce)
+        {
+            //声明一个图形对象用于返回
+            Entity entR;
+            //计算镜像的变换矩阵
+            Matrix3d mt = Matrix3d.Mirroring(new Line3d(pt1, pt2));
+            using(Transaction trans = entId.Database.TransactionManager.StartTransaction())
+            {
+                if (isEraseSoruce)
+                {
+                    //打开源对象
+                    Entity ent = (Entity)trans.GetObject(entId, OpenMode.ForWrite);
+                    ent.TransformBy(mt);
+                    entR = ent;
+                }
+                else
+                {
+                    //打开源对象
+                    Entity ent = (Entity)trans.GetObject(entId, OpenMode.ForRead);
+                    entR = ent.GetTransformedCopy(mt);                    
+                }
+                trans.Commit();
+            }
+            return entR;
         }
     }
 }

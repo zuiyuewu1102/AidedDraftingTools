@@ -50,28 +50,28 @@ namespace BF_CustomTools
                     {
                         case "Line":
                             Line line = (Line)trans.GetObject(id, OpenMode.ForRead);
-                            ledLenght = ledLenght + line.Length;
+                            ledLenght += line.Length;
                             break;
                         case "Arc":
                             Arc arc = (Arc)trans.GetObject(id, OpenMode.ForRead);
-                            ledLenght = ledLenght + arc.Length;
+                            ledLenght += arc.Length;
                             break;
                         case "Circle":
                             Circle c = (Circle)trans.GetObject(id, OpenMode.ForRead);
-                            ledLenght = ledLenght + c.Circumference;
+                            ledLenght += c.Circumference;
                             break;
                         case "Polyline":
                             Polyline pline = (Polyline)trans.GetObject(id, OpenMode.ForRead);
-                            ledLenght = ledLenght + pline.Length;
+                            ledLenght += pline.Length;
                             break;
                         default:
-                            ledLenght = ledLenght + 1;
+                            ledLenght += 1;
                             break;
                     }
                 }
                 trans.Commit();
             }
-            ledLenght = ledLenght / 1000;
+            ledLenght /= 1000;
             string strLen = String.Format("{0:N2} ", ledLenght);
             ed.WriteMessage("\nLED灯条总长为：" + strLen + "m");
         }
@@ -112,16 +112,16 @@ namespace BF_CustomTools
                     switch (br.Name)
                     {
                         case "天花灯":
-                            thdsl = thdsl + 1;
+                            thdsl += 1;
                             break;
                         case "LED筒灯":
-                            tdsl = tdsl + 1;
+                            tdsl += 1;
                             break;
                         case "百福-3孔射灯":
-                            sksdsl = sksdsl + 1;
+                            sksdsl += 1;
                             break;
                         case "百福-户外方金卤灯":
-                            fxjldsl = fxjldsl + 1;
+                            fxjldsl += 1;
                             break;
                         default:                            
                             break;
@@ -177,7 +177,7 @@ namespace BF_CustomTools
                     {
                         DBText dBText = trans.GetObject(id, OpenMode.ForRead) as DBText;
                         val = double.Parse(Tools.IntegerString(dBText.TextString)) / 1000;
-                        PubVal.zongdianliang = PubVal.zongdianliang + val;
+                        PubVal.zongdianliang += val;
                     }
                 }
                 trans.Commit();
