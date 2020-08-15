@@ -21,12 +21,12 @@ namespace BF_CustomTools
 
         }
 
-        private void listBoxGlobalScale_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBoxGlobalScale_SelectedIndexChanged(object sender, EventArgs e)
         {
             textBox1.Text = listBoxGlobalScale.SelectedItem.ToString().Substring(2);
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox1.Checked == true)
             {
@@ -40,12 +40,11 @@ namespace BF_CustomTools
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             this.Hide();
 
-            string message = string.Empty;
-
+            string message;
             if (checkBox1.Checked == true)
             {
                 PublicValue.dimScale = double.Parse(textBox1.Text);

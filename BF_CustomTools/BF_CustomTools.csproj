@@ -30,25 +30,28 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AcCoreMgd">
-      <HintPath>..\..\ObjectARX 2016\inc\AcCoreMgd.dll</HintPath>
+      <HintPath>F:\ObjectARX 2016\inc\AcCoreMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcCui">
-      <HintPath>..\..\ObjectARX 2016\inc\AcCui.dll</HintPath>
+      <HintPath>F:\ObjectARX 2016\inc\AcCui.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcDbMgd">
-      <HintPath>..\..\ObjectARX 2016\inc\AcDbMgd.dll</HintPath>
+      <HintPath>F:\ObjectARX 2016\inc\AcDbMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcMgd">
-      <HintPath>..\..\ObjectARX 2016\inc\AcMgd.dll</HintPath>
+      <HintPath>F:\ObjectARX 2016\inc\AcMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AdWindows">
-      <HintPath>..\..\ObjectARX 2016\inc\AdWindows.dll</HintPath>
+      <HintPath>F:\ObjectARX 2016\inc\AdWindows.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Autodesk.AutoCAD.Interop">

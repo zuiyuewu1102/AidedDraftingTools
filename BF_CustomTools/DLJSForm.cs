@@ -23,12 +23,12 @@ namespace BF_CustomTools
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             textBox4.Text = String.Format("{0:N2} ", (double.Parse(textBox2.Text) * double.Parse(textBox3.Text)));
             double dianliu = (double.Parse(textBox4.Text) / (Math.Sqrt(3) * double.Parse(comboBox1.Text) * double.Parse(textBox5.Text))) * 1000;            
             textBox6.Text = String.Format("{0:N2} ", dianliu);
-            dianliu = dianliu * 1.5;
+            dianliu *= 1.5;
 
             if (dianliu < 6 || dianliu == 6)
             {
@@ -75,7 +75,7 @@ namespace BF_CustomTools
             textBox1.Text = "EA9RN" +PubVal.jishu + PubVal.edingdianliu + "30C";
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch (comboBox1.SelectedIndex)
             {
@@ -88,7 +88,7 @@ namespace BF_CustomTools
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void Button2_Click(object sender, EventArgs e)
         {
             PubVal.duanluqi = textBox1.Text;
             PubVal.pe = "Pe  = " + textBox2.Text + "Kw";
@@ -148,12 +148,14 @@ namespace BF_CustomTools
                 BlockTableRecord btr;
                 btr = trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
-                DBText text0 = new DBText(); // 新建单行文本对象
-                text0.Position = insertPoint; // 设置文本位置 
-                text0.TextString = neirong; // 设置文本内容
-                text0.Height = 75;  // 设置文本高度
-                text0.Rotation = 0;  // 设置文本选择角度
-                text0.IsMirroredInX = false; // 在X轴镜像
+                DBText text0 = new DBText
+                {
+                    Position = insertPoint, // 设置文本位置 
+                    TextString = neirong, // 设置文本内容
+                    Height = 75,  // 设置文本高度
+                    Rotation = 0,  // 设置文本选择角度
+                    IsMirroredInX = false // 在X轴镜像
+                }; // 新建单行文本对象
                 //text0.HorizontalMode = TextHorizontalMode.TextLeft; // 设置对齐方式
                 //text0.AlignmentPoint = text0.Position; //设置对齐点
                 btr.AppendEntity(text0);

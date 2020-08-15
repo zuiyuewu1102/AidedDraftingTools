@@ -85,7 +85,7 @@ namespace BF_CustomTools
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             PublicValue.syNo = textBox1.Text;
             PublicValue.scale = textBox2.Text;
@@ -93,22 +93,22 @@ namespace BF_CustomTools
             this.Close();
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void LlistBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             textBox1.Text = listBox1.SelectedItem.ToString();
         }
 
-        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             textBox2.Text = listBox2.SelectedItem.ToString();
         }
 
-        private void listBox3_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             textBox3.Text = listBox3.SelectedItem.ToString();
         }
 
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton2_CheckedChanged(object sender, EventArgs e)
         {
             if(radioButton2.Checked == true)
             {
@@ -121,7 +121,7 @@ namespace BF_CustomTools
             }
         }
 
-        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton3_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton3.Checked == true)
             {
@@ -135,7 +135,7 @@ namespace BF_CustomTools
             }
         }
 
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton1_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton1.Checked == true)
             {
@@ -147,17 +147,17 @@ namespace BF_CustomTools
             }
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void PictureBox1_Click(object sender, EventArgs e)
         {
             radioButton1.Checked = true;
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
+        private void PictureBox2_Click(object sender, EventArgs e)
         {
             radioButton2.Checked = true;
         }
 
-        private void pictureBox3_Click(object sender, EventArgs e)
+        private void PictureBox3_Click(object sender, EventArgs e)
         {
             radioButton3.Checked = true;
         }

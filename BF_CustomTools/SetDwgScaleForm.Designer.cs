@@ -75,7 +75,7 @@
             this.listBoxGlobalScale.Name = "listBoxGlobalScale";
             this.listBoxGlobalScale.Size = new System.Drawing.Size(141, 232);
             this.listBoxGlobalScale.TabIndex = 0;
-            this.listBoxGlobalScale.SelectedIndexChanged += new System.EventHandler(this.listBoxGlobalScale_SelectedIndexChanged);
+            this.listBoxGlobalScale.SelectedIndexChanged += new System.EventHandler(this.ListBoxGlobalScale_SelectedIndexChanged);
             // 
             // listBoxLocalScale
             // 
@@ -141,7 +141,7 @@
             this.checkBox1.TabIndex = 6;
             this.checkBox1.Text = "有局部比例";
             this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // button1
             // 
@@ -151,7 +151,7 @@
             this.button1.TabIndex = 7;
             this.button1.Text = "确定";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // label3
             // 

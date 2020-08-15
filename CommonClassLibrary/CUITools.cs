@@ -39,9 +39,11 @@ namespace CommonClassLibrary
             if (!File.Exists(cuiFile))
             {
                 //创建CUI文件对象
-                cs = new CustomizationSection();
-                //指定菜单组名称
-                cs.MenuGroupName = menuGroupName;
+                cs = new CustomizationSection
+                {
+                    //指定菜单组名称
+                    MenuGroupName = menuGroupName
+                };
                 //保存CUI文件
                 cs.SaveAs(cuiFile);
             }
@@ -203,11 +205,13 @@ namespace CommonClassLibrary
             if (menuGroup.Toolbars.IsNameFree(name))
             {
                 //为工具栏指定显示名称和所属菜单组
-                tb = new Toolbar(name, menuGroup);
-                //设置工具栏为浮动工具栏
-                tb.ToolbarOrient = ToolbarOrient.floating;
-                //设置工具栏可见
-                tb.ToolbarVisible = ToolbarVisible.show;
+                tb = new Toolbar(name, menuGroup)
+                {
+                    //设置工具栏为浮动工具栏
+                    ToolbarOrient = ToolbarOrient.floating,
+                    //设置工具栏可见
+                    ToolbarVisible = ToolbarVisible.show
+                };
             }
             //返回工具栏对象
             return tb;
@@ -238,9 +242,11 @@ namespace CommonClassLibrary
         public static void AttachToolbarToFlyout(this Toolbar parent,int index,Toolbar toolbarRef)
         {
             //创建一个弹出式工具栏，指定其所属的工具栏和位置
-            ToolbarFlyout flyout = new ToolbarFlyout(parent, index);
-            //指定弹出式工具栏所引用的工具栏
-            flyout.ToolbarReference = toolbarRef.Name;
+            ToolbarFlyout flyout = new ToolbarFlyout(parent, index)
+            {
+                //指定弹出式工具栏所引用的工具栏
+                ToolbarReference = toolbarRef.Name
+            };
             //引用的工具栏初始状态不可见
             toolbarRef.ToolbarVisible = ToolbarVisible.hide;
         }

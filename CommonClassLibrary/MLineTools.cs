@@ -23,9 +23,11 @@ namespace CommonClassLibrary
             //如果已存在指定名称的多线样式、则返回该多线样式的Id
             if (dict.Contains(styleName)) return (ObjectId)dict[styleName];
             //创建一个多线样式对象
-            MlineStyle mlineStyle = new MlineStyle();
-            //设置多线样式的名称
-            mlineStyle.Name = styleName;
+            MlineStyle mlineStyle = new MlineStyle
+            {
+                //设置多线样式的名称
+                Name = styleName
+            };
             //为多线样式添加新的元素
             foreach (var element in elements)
             {

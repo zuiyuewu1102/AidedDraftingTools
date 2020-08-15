@@ -85,7 +85,7 @@ namespace BF_CustomTools
     {
         private Point2d spt, ept;
         private Point2d m_Point2,m_Point3;        
-        private double m_thickness = 12;
+        private readonly double m_thickness = 12;
 
         public JBJig(Vector3d normal) : base(new Polyline())
         {
@@ -102,10 +102,12 @@ namespace BF_CustomTools
             {
                 Point3d m_spt = res1.Value;
                 spt = new Point2d(m_spt.X, m_spt.Y);
-                PromptPointOptions opt2 = new PromptPointOptions("\n请指定绘制板材的终止点");
-                //optJig2.UserInputControls = UserInputControls.Accept3dCoordinates;
-                opt2.UseBasePoint = true;
-                opt2.BasePoint = m_spt;
+                PromptPointOptions opt2 = new PromptPointOptions("\n请指定绘制板材的终止点")
+                {
+                    //optJig2.UserInputControls = UserInputControls.Accept3dCoordinates;
+                    UseBasePoint = true,
+                    BasePoint = m_spt
+                };
                 PromptPointResult res2 = ed.GetPoint(opt2);
                 //拖拽取消
                 if (res2.Status == PromptStatus.Cancel) return;
@@ -249,9 +251,11 @@ namespace BF_CustomTools
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Editor ed = doc.Editor;
             Point3d startPt = Point3d.Origin;
-            PromptPointOptions ppo = new PromptPointOptions("jafsf");//需自己实现（获取用户输入点）
-            ppo.UseBasePoint = true;
-            ppo.BasePoint = startPt;
+            PromptPointOptions ppo = new PromptPointOptions("jafsf")
+            {
+                UseBasePoint = true,
+                BasePoint = startPt
+            };//需自己实现（获取用户输入点）
             PromptPointResult ppr = ed.GetPoint(ppo);
             if (ppr.Status != PromptStatus.OK)
                 return false;
@@ -268,8 +272,10 @@ namespace BF_CustomTools
 
         protected override SamplerStatus Sampler(JigPrompts prompts)//提取输入数据并处理(鼠标移动时一定频率调用)
         {
-            JigPromptPointOptions JPPO = new JigPromptPointOptions();//定义点绘制的配置类
-            JPPO.Message = "\n选择点";
+            JigPromptPointOptions JPPO = new JigPromptPointOptions
+            {
+                Message = "\n选择点"
+            };//定义点绘制的配置类
 
             PromptPointResult PR = prompts.AcquirePoint(JPPO);//当鼠标未移动时，程序会在这里阻塞，直到鼠标移动，提取出当前鼠标位置，继续往下运行
             if (PR.Status != PromptStatus.OK)
@@ -312,9 +318,11 @@ namespace BF_CustomTools
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Editor ed = doc.Editor;
             Point3d startPt = Point3d.Origin;
-            PromptPointOptions ppo = new PromptPointOptions("jafsf");//需自己实现（获取用户输入点）
-            ppo.UseBasePoint = true;
-            ppo.BasePoint = startPt;
+            PromptPointOptions ppo = new PromptPointOptions("jafsf")
+            {
+                UseBasePoint = true,
+                BasePoint = startPt
+            };//需自己实现（获取用户输入点）
             PromptPointResult ppr = ed.GetPoint(ppo);
             if (ppr.Status != PromptStatus.OK)
                 return false;
@@ -332,9 +340,11 @@ namespace BF_CustomTools
 
         protected override SamplerStatus Sampler(JigPrompts prompts)
         {
-            JigPromptPointOptions m_JPPO = new JigPromptPointOptions();
-            m_JPPO.Message = "\ninput end point";
-            m_JPPO.UserInputControls = (UserInputControls.Accept3dCoordinates | UserInputControls.NullResponseAccepted | UserInputControls.AnyBlankTerminatesInput);
+            JigPromptPointOptions m_JPPO = new JigPromptPointOptions
+            {
+                Message = "\ninput end point",
+                UserInputControls = (UserInputControls.Accept3dCoordinates | UserInputControls.NullResponseAccepted | UserInputControls.AnyBlankTerminatesInput)
+            };
 
             PromptPointResult PR = prompts.AcquirePoint(m_JPPO);
 
@@ -367,12 +377,11 @@ namespace BF_CustomTools
             return true;
         }
 
-        Line line_1;
-        Line line_2;
+        readonly Line line_1;
+        readonly Line line_2;
         Point3d m_BasePt;
         Point3d m_AcquirePt;
-
-        double m_gap;
+        readonly double m_gap;
     }
 
 

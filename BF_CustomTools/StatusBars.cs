@@ -18,9 +18,9 @@ namespace BF_CustomTools
 
             Pane paneButton = (Pane)sender;
 
-            Document doc = Application.DocumentManager.MdiActiveDocument;
+            //Document doc = Application.DocumentManager.MdiActiveDocument;
 
-            Database db = doc.Database;
+            //Database db = doc.Database;
 
             int dimScale = System.Convert.ToInt32(Application.GetSystemVariable("DIMSCALE"));
 
@@ -52,7 +52,7 @@ namespace BF_CustomTools
         }
         public static void UpdateAppPane()
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
+            //Document doc = Application.DocumentManager.MdiActiveDocument;
 
             int dimScale = System.Convert.ToInt32(Application.GetSystemVariable("DIMSCALE"));
 
@@ -76,17 +76,18 @@ namespace BF_CustomTools
 
             String dimStyle = System.Convert.ToString(Application.GetSystemVariable("DIMSTYLE"));
 
-            Pane appPaneButton = new Pane();
+            Pane appPaneButton = new Pane
+            {
+                Enabled = true,
 
-            appPaneButton.Enabled = true;
+                Visible = true,
 
-            appPaneButton.Visible = true;
+                Style = PaneStyles.Normal,
 
-            appPaneButton.Style = PaneStyles.Normal;
+                Text = " DimScale (1:" + dimScale.ToString() + " ) DimStyle:( " + dimStyle + " ) ",
 
-            appPaneButton.Text = " DimScale (1:" + dimScale.ToString() + " ) DimStyle:( " + dimStyle + " ) " ;
-
-            appPaneButton.ToolTipText = "百福工具箱你值得拥有";
+                ToolTipText = "百福工具箱你值得拥有"
+            };
 
             //Application.StatusBar.Update();
 
@@ -104,23 +105,25 @@ namespace BF_CustomTools
 
             ObjectId id = ed.GetEntity("请选择需要改变颜色的对象").ObjectId;
 
-            TrayItem trayItem = new TrayItem();
-
-            trayItem.ToolTipText = "change color of Entity";
+            TrayItem trayItem = new TrayItem
+            {
+                ToolTipText = "change color of Entity"
+            };
 
             //trayItem.Icon = doc.StatusBar.TrayItems[0].Icon;//有问题报错
 
             Application.StatusBar.TrayItems.Add(trayItem);
 
-            TrayItemBubbleWindow window = new TrayItemBubbleWindow();
+            TrayItemBubbleWindow window = new TrayItemBubbleWindow
+            {
+                Title = "change color of Entity",
 
-            window.Title = "change color of Entity";
+                HyperText = "对象颜色修改为红色",
 
-            window.HyperText = "对象颜色修改为红色";
+                Text = "点击改变对象的颜色",
 
-            window.Text = "点击改变对象的颜色";
-
-            window.IconType = IconType.Information;
+                IconType = IconType.Information
+            };
 
             trayItem.ShowBubbleWindow(window);
 

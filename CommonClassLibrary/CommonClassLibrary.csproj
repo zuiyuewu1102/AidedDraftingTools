@@ -32,24 +32,24 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AcCoreMgd">
-      <HintPath>..\..\ObjectARX 2016\inc\AcCoreMgd.dll</HintPath>
+      <HintPath>F:\ObjectARX 2016\inc\AcCoreMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcCui, Version=20.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ObjectARX 2016\inc\AcCui.dll</HintPath>
+      <HintPath>F:\ObjectARX 2016\inc\AcCui.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcDbMgd">
-      <HintPath>..\..\ObjectARX 2016\inc\AcDbMgd.dll</HintPath>
+      <HintPath>F:\ObjectARX 2016\inc\AcDbMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcMgd">
-      <HintPath>..\..\ObjectARX 2016\inc\AcMgd.dll</HintPath>
+      <HintPath>F:\ObjectARX 2016\inc\AcMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AdWindows">
-      <HintPath>..\..\ObjectARX 2016\inc\AdWindows.dll</HintPath>
+      <HintPath>F:\ObjectARX 2016\inc\AdWindows.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />

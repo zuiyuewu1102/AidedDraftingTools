@@ -152,7 +152,7 @@ namespace BF_CustomTools
             DateTime dt = DateTime.Now;
             string strTime = dt.ToString("yyyyMMddHHmmss");
             PublicValue.newBlockName = "BF" + strTime;
-            string blockName = "BF" + strTime;
+            //string blockName = "BF" + strTime;
 
             ed.WriteMessage("\n百福工具箱——修改块名");
 

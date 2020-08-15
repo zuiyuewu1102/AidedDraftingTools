@@ -42,8 +42,10 @@ namespace BF_CustomTools
                 typeval.SetValue(new TypedValue((int)DxfCode.Start, "TEXT"), 0);
 
                 SelectionFilter sf = new SelectionFilter(typeval);
-                PromptSelectionOptions pso = new PromptSelectionOptions();
-                pso.MessageForAdding = "\n请选择所有需要求和的文字项";
+                PromptSelectionOptions pso = new PromptSelectionOptions
+                {
+                    MessageForAdding = "\n请选择所有需要求和的文字项"
+                };
                 PromptSelectionResult psr = ed.GetSelection(pso,sf);
                 if (psr.Status == PromptStatus.OK)
                 {
@@ -53,7 +55,7 @@ namespace BF_CustomTools
                     {
                         DBText dBText = trans.GetObject(id, OpenMode.ForRead) as DBText;
                         val = double.Parse(Tools.IntegerString(dBText.TextString));
-                        zongVal = zongVal + val;
+                        zongVal += val;
                     }
                 }
 
