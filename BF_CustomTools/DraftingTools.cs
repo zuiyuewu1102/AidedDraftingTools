@@ -1196,37 +1196,60 @@ namespace BF_CustomTools
                     ppr1 = ed.GetPoint(ppo1);
                 } while (ppr1.Status != PromptStatus.OK);
                 pt2 = ppr1.Value;
+                Vector2d vector = new Point2d(pt2.X, pt2.Y) - new Point2d(pt1.X, pt1.Y);
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
                     string blockPath = Tools.GetCurrentPath() + @"\BaseDwgs\铝型材标准块库.dwg";
-
+                    string block1Path = Tools.GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
                     db.ImportBlocksFromDWG(blockPath, "LC156");
-
+                    db.ImportBlocksFromDWG(block1Path, "LED硬灯条_端面");
                     BlockTable bt = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
                     BlockTableRecord btr = trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-
                     if (bt.Has("LC156"))
                     {
-                        using (BlockReference brf = new BlockReference(pt1, bt["LC156"]))
-                        {
-                            btr.AppendEntity(brf);
-                            trans.AddNewlyCreatedDBObject(brf, true);
-                        }
+                        //插入第一个图块
+                        ObjectId spaceId = db.CurrentSpaceId;//获取当前空间（模型空间或图纸空间）
+                        spaceId.InsertBlockReference("BF-铝材", "LC156", pt1, new Scale3d(1), vector.Angle);
 
-                        using (BlockReference brf = new BlockReference(pt2, bt["LC156"]))
+                        //插入第2个图块并镜像
+                        spaceId.InsertBlockReference("BF-铝材", "LC156", pt2, new Scale3d(1), vector.Angle).MirrorEntity(pt2, pt2.Polar(vector.Angle + Math.PI * 0.5, 100), true);
+
+                        //绘制底板
+                        Point2d lspt1 = new Point2d(pt1.X, pt1.Y).Polar(vector.Angle + Math.Atan(45.0/8.0),Math.Sqrt(2089));
+                        Point2d lspt2 = lspt1.Polar(vector.Angle, vector.Length - 16);
+                        Point2d lspt3 = lspt2.Polar(vector.Angle + Math.PI * 0.5, 9);
+                        Point2d lspt4 = lspt1.Polar(vector.Angle + Math.PI * 0.5, 9);
+                        db.AddPolyLineToModeSpace("BF-产品线", true, lspt1, lspt2, lspt3, lspt4);
+                        //插入硬灯条截面图块
+                        Vector2d vector1 = lspt2 - lspt1;
+                        double nums = vector1.Length / 100;
+                        int num = (int)nums;
+                        double qscd = (vector1.Length - num * 100) / 2;
+                        if (qscd <= 35)
                         {
-                            btr.AppendEntity(brf);
-                            trans.AddNewlyCreatedDBObject(brf, true);
+                            qscd += 50;
+                            num -= 1;
                         }
-                    }
-                    else
-                    {
-                        ed.WriteMessage("\n未在图库中找到图块LC156");
+                        else if (qscd >= 85)
+                        {
+                            qscd -= 50;
+                            num += 1;
+                        }
+                        for (int i = 0; i <= num; i++)
+                        {
+                            Point3d insertPt = new Point3d(lspt1.Polar(vector1.Angle, qscd + i * 100).X, lspt1.Polar(vector1.Angle, qscd + i * 100).Y, 0);
+                            spaceId.InsertBlockReference("BF-灯具", "LED硬灯条_端面", insertPt, new Scale3d(1), vector1.Angle);                            
+                        }
+                        //绘制灯箱布
+                        lspt1 = new Point2d(pt1.X, pt1.Y).Polar(vector.Angle + Math.Atan(10.0 / 9), Math.Sqrt(181));
+                        lspt2 = lspt1.Polar(vector.Angle - Math.PI * 0.5, 15);
+                        lspt3 = lspt2.Polar(vector.Angle, vector.Length - 18);
+                        lspt4 = lspt3.Polar(vector.Angle + Math.PI * 0.5, 15);
+                        db.AddPolyLineDXBToModeSpace("BF-细线", lspt1, lspt2, lspt3, lspt4);
                     }
                     trans.Commit();
                 }
-            }           
-
+            }
             db.SetCurrentLayer(curLayerName);
         }
 

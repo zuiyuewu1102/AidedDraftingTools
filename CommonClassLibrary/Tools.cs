@@ -185,6 +185,33 @@ namespace CommonClassLibrary
             }
         }
 
+        public static void AddPolyLineDXBToModeSpace(this Database db, string layerName, params Point2d[] points)
+        {
+            db.SetCurrentLayer(layerName);
+            using (Transaction trans = db.TransactionManager.StartTransaction())
+            {
+                BlockTable bt = (BlockTable)trans.GetObject(db.BlockTableId, OpenMode.ForRead);
+                BlockTableRecord btr = (BlockTableRecord)trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
+                Polyline pl = new Polyline();
+                int i = 0;
+                foreach (Point2d pt in points)
+                {
+                    pl.AddVertexAt(i, pt, 0, 0, 0);
+                    i++;
+                }
+                pl.SetStartWidthAt(0, 3);
+                pl.SetEndWidthAt(0, 3);
+                pl.SetStartWidthAt(1, 0);
+                pl.SetEndWidthAt(1, 0);
+                pl.SetStartWidthAt(2, 3);
+                pl.SetEndWidthAt(2, 3);
+
+                btr.AppendEntity(pl);
+                trans.AddNewlyCreatedDBObject(pl, true);
+                trans.Commit();
+            }
+        }
+
         /// <summary>
         /// 将实体添加到图纸空间
         /// </summary>
@@ -652,6 +679,13 @@ namespace CommonClassLibrary
             return point;
         }
 
+        public static Point3d Polar(this Point3d basePt, double angle, double len)
+        {
+            Point3d point = new Point3d(basePt.X + Math.Cos(angle) * len, basePt.Y + Math.Sin(angle) * len,basePt.Z);
+
+            return point;
+        }
+
         /// <summary>
         /// 将字符串中的数字和小数点转换出来
         /// </summary>
@@ -788,6 +822,24 @@ namespace CommonClassLibrary
                 trans.Commit();
             }
             return entR;
+        }
+        public static void RotateEntity(this ObjectId entId, Point3d center, double degree)
+        {
+            Database db = HostApplicationServices.WorkingDatabase;
+            using (Transaction trans = db.TransactionManager.StartTransaction())
+            {
+                //打开块表
+                BlockTable bt = (BlockTable)trans.GetObject(db.BlockTableId, OpenMode.ForRead);
+                //打开块表记录
+                BlockTableRecord btr = (BlockTableRecord)trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
+                //打开图形
+                Entity ent = (Entity)entId.GetObject(OpenMode.ForWrite);
+                //计算变换矩阵
+                Matrix3d mt = Matrix3d.Rotation(degree,Vector3d.ZAxis, center);
+                ent.GetTransformedCopy(mt);
+                //提交事务处理
+                trans.Commit();
+            }
         }
 
         /// <summary>
