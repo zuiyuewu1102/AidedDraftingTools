@@ -117,21 +117,7 @@ namespace BF_CustomTools
         //[CommandMethod("DD")]
         public void DD()
         {
-            Database db = HostApplicationServices.WorkingDatabase;
-            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            Matrix3d mt = ed.CurrentUserCoordinateSystem;
-            Vector3d normal = mt.CoordinateSystem3d.Zaxis;
-            CircleJig circleJig = new CircleJig(normal);
-            for (; ; )
-            {
-                PromptResult resJip = ed.Drag(circleJig);
-                if (resJip.Status == PromptStatus.Cancel) return;
-                if (resJip.Status == PromptStatus.OK)
-                {
-                    Tools.AddToModelSpace(db, circleJig.GetEntity());
-                    break;
-                }
-            }
+           
         }
 
         //有问题
@@ -141,23 +127,13 @@ namespace BF_CustomTools
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             string curLayerName = db.GetCurrentLayerName();
+            ed.WriteMessage("\n百福工具箱——绘制夹层板截面");
 
             db.SetCurrentLayer("BF-产品线");
 
-            Matrix3d mt = ed.CurrentUserCoordinateSystem;
-            Vector3d normal = mt.CoordinateSystem3d.Zaxis;
-            JBJig jbJig = new JBJig(normal);
-            for (; ; )
-            {
-                PromptResult resJip = ed.Drag(jbJig);
-                if (resJip.Status == PromptStatus.Cancel) return;
-                if (resJip.Status == PromptStatus.OK)
-                {
-                    Tools.AddToModelSpace(db, jbJig.GetEntity());
-                    break;
-                }
-            }
-
+            //Matrix3d mt = ed.CurrentUserCoordinateSystem;
+            //Vector3d normal = mt.CoordinateSystem3d.Zaxis;
+            
             db.SetCurrentLayer(curLayerName);
         }
 
@@ -622,7 +598,6 @@ namespace BF_CustomTools
                 db.SetCurrentLayer(curLayerName);
                 return;
             }
-
             db.SetCurrentLayer(curLayerName);
         }
 
@@ -1190,9 +1165,11 @@ namespace BF_CustomTools
                 PromptPointResult ppr1;
                 do
                 {
-                    ppo1 = new PromptPointOptions("\n请选择终止点");
-                    ppo1.UseBasePoint = true;
-                    ppo1.BasePoint = pt1;
+                    ppo1 = new PromptPointOptions("\n请选择终止点")
+                    {
+                        UseBasePoint = true,
+                        BasePoint = pt1
+                    };
                     ppr1 = ed.GetPoint(ppo1);
                 } while (ppr1.Status != PromptStatus.OK);
                 pt2 = ppr1.Value;
@@ -1253,243 +1230,274 @@ namespace BF_CustomTools
             db.SetCurrentLayer(curLayerName);
         }
 
-        /*
-        public class ClsDrawJigLine : Autodesk.AutoCAD.EditorInput.EntityJig
+        //绘制矩形卡布灯箱顶剖图
+        [CommandMethod("JXDXDP")]
+        public void JXDXDP()
         {
-            #region 成员变量
-            public static int color = 0;
-            public static Point3dCollection m_pts;
-            Point3d m_tempPoint;
-            Plane m_plane;
-            #endregion
-            #region 构造方法
-
-            public ClsDrawJigLine(Matrix3d ucs): base(new Polyline())
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
+            ed.WriteMessage("百福工具箱——快速绘制矩形卡布灯箱顶剖图");
+            string curLayerName = db.GetCurrentLayerName();
+            Point3d pt1, pt2;
+            PromptPointOptions ppo = new PromptPointOptions("\n请选择起始点");
+            PromptPointResult ppr = ed.GetPoint(ppo);
+            if (ppr.Status == PromptStatus.OK)
             {
-                m_pts = new Point3dCollection();
-                Point3d origin = new Point3d(0, 0, 0);
-                Vector3d normal = new Vector3d(0, 0, 1);
-                normal = normal.TransformBy(ucs);
-                m_plane = new Plane(origin, normal);
-                Polyline pline = Entity as Polyline;
-                pline.SetDatabaseDefaults();
-                pline.Normal = normal;
-                pline.ColorIndex = color;
-                pline.AddVertexAt(0, new Point2d(0, 0), 0, 0, 0);
-            }
-
-            #endregion
-
-            /// <summary>
-                    /// 画线
-                    /// </summary>
-                    /// <param name=""></param>
-                    /// <returns></returns>
-            public Point3dCollection DragLine(int colorIndex)
-            {
-                return ClsDrawJigLine.PolyJig(colorIndex);
-            }
-
-            #region 画线方法
-            /// <summary>
-                    /// 画线
-                    /// </summary>
-                    /// <param name="colorIndex">颜色</param>
-                    /// <returns></returns>
-            public static Point3dCollection PolyJig(int colorIndex)
-            {
-                color = colorIndex;
-                Document doc = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument;
-                Editor ed = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor;
-                Matrix3d ucs = ed.CurrentUserCoordinateSystem;
-                ClsDrawJigLine jig = new ClsDrawJigLine(ucs);
-                bool bSuccess = true, bComplete = false;
+                pt1 = ppr.Value;
+                PromptPointOptions ppo1;
+                PromptPointResult ppr1;
                 do
                 {
-                    PromptResult res = ed.Drag(jig);
-                    bSuccess = (res.Status == PromptStatus.OK);
-                    if (bSuccess)
-                        jig.AddLatestVertex();
-                    if (res.Status != PromptStatus.OK)
+                    ppo1 = new PromptPointOptions("\n请选择终止点")
                     {
-                        PromptPointOptions ppo = new PromptPointOptions("\n请输入下一个点或[继续(C)/回退(U)/确定(O)]<O>");
-                        ppo.Keywords.Add("C");
-                        ppo.Keywords.Add("U");
-                        ppo.Keywords.Add("O");
-                        ppo.Keywords.Default = "O";
+                        UseBasePoint = true,
+                        BasePoint = pt1
+                    };
+                    ppr1 = ed.GetPoint(ppo1);
+                } while (ppr1.Status != PromptStatus.OK);
+                pt2 = ppr1.Value;
+                Vector2d vector = new Point2d(pt2.X, pt2.Y) - new Point2d(pt1.X, pt1.Y);
+                using (Transaction trans = db.TransactionManager.StartTransaction())
+                {
+                    string blockPath = Tools.GetCurrentPath() + @"\BaseDwgs\铝型材标准块库.dwg";
+                    string block1Path = Tools.GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
+                    db.ImportBlocksFromDWG(blockPath, "LC51&52");
+                    db.ImportBlocksFromDWG(block1Path, "LED硬灯条_端面");
+                    BlockTable bt = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
+                    BlockTableRecord btr = trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                    if (bt.Has("LC51&52"))
+                    {
+                        //插入第一个图块
+                        ObjectId spaceId = db.CurrentSpaceId;//获取当前空间（模型空间或图纸空间）
+                        spaceId.InsertBlockReference("BF-铝材", "LC51&52", pt1, new Scale3d(1), vector.Angle);
 
-                        PromptPointResult pps = ed.GetPoint(ppo);
-                        if (pps.Status == PromptStatus.Keyword)
+                        //插入第2个图块并镜像
+                        spaceId.InsertBlockReference("BF-铝材", "LC51&52", pt2, new Scale3d(1), vector.Angle).MirrorEntity(pt2, pt2.Polar(vector.Angle + Math.PI * 0.5, 100), true);
+
+                        //绘制底板
+                        Point2d lspt1 = new Point2d(pt1.X, pt1.Y).Polar(vector.Angle + Math.Atan(50.0 / 18.0), Math.Sqrt(2824));
+                        Point2d lspt2 = lspt1.Polar(vector.Angle, vector.Length - 36);
+                        Point2d lspt3 = lspt2.Polar(vector.Angle + Math.PI * 0.5, 9);
+                        Point2d lspt4 = lspt1.Polar(vector.Angle + Math.PI * 0.5, 9);
+                        db.AddPolyLineToModeSpace("BF-产品线", true, lspt1, lspt2, lspt3, lspt4);
+                        //插入硬灯条截面图块
+                        Vector2d vector1 = lspt2 - lspt1;
+                        double nums = vector1.Length / 100;
+                        int num = (int)nums;
+                        double qscd = (vector1.Length - num * 100) / 2;
+                        if (qscd <= 35)
                         {
-                            switch (pps.StringResult)
-                            {
-                                case "C":
-                                    bSuccess = true;
-                                    bComplete = false;
-                                    break;
-                                case "U":
-                                    if (m_pts.Count > 0)
-                                    {
-                                        m_pts.RemoveAt(m_pts.Count - 1);
-                                        bSuccess = true;
-                                        bComplete = false;
-                                        jig.RemoveLastVertex();
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }                        
+                            qscd += 50;
+                            num -= 1;
+                        }
+                        else if (qscd >= 85)
+                        {
+                            qscd -= 50;
+                            num += 1;
+                        }
+                        for (int i = 0; i <= num; i++)
+                        {
+                            Point3d insertPt = new Point3d(lspt1.Polar(vector1.Angle, qscd + i * 100).X, lspt1.Polar(vector1.Angle, qscd + i * 100).Y, 0);
+                            spaceId.InsertBlockReference("BF-灯具", "LED硬灯条_端面", insertPt, new Scale3d(1), vector1.Angle);
+                        }
+                        //绘制灯箱布
+                        lspt1 = new Point2d(pt1.X, pt1.Y).Polar(vector.Angle + Math.Atan(14.0 / 21), Math.Sqrt(638));
+                        lspt2 = lspt1.Polar(vector.Angle - Math.PI * 0.5, 15);
+                        lspt3 = lspt2.Polar(vector.Angle, vector.Length - 42);
+                        lspt4 = lspt3.Polar(vector.Angle + Math.PI * 0.5, 15);
+                        db.AddPolyLineDXBToModeSpace("BF-细线", lspt1, lspt2, lspt3, lspt4);
                     }
-                } while (bSuccess && !bComplete);
-                return m_pts;
-            }
-
-            #endregion
-            #region 用于在完成Drag后，移除最后个虚构的点
-            /// <summary>
-                    /// 用于在完成Drag后，移除最后个虚构的点
-                    /// </summary>
-            public void RemoveLastVertex()
-            {
-                Polyline pline = Entity as Polyline;
-                if (pline.NumberOfVertices > 1)
-                {
-                    pline.RemoveVertexAt(m_pts.Count);
+                    trans.Commit();
                 }
             }
-            #endregion
-
-            #region 在添加一个点时激发事件
-            /// <summary>
-                    /// 事件委托
-                    /// </summary>
-                    /// <param name="e">事件参数</param>
-            public delegate void AddHandle(EventArgs e);
-
-            public class EventArgs
-            {
-                public EventArgs(Point3dCollection currentPoints, int index)
-                {
-                    this.currentPoints = currentPoints;
-                    this.index = index;
-                }
-                /// <summary>
-                            /// 当前点集合
-                            /// </summary>
-                private Point3dCollection currentPoints;
-                /// <summary>
-                            /// 当前点集合
-                            /// </summary>
-                public Point3dCollection CurrentPoints
-                {
-                    get { return currentPoints; }
-                }
-                /// <summary>
-                            /// 当前点索引
-                            /// </summary>
-                private int index;
-                /// <summary>
-                            /// 当前点索引
-                            /// </summary>
-                public int Index
-                {
-                    get { return index; }
-                }
-                /// <summary>
-                            /// 是否取消点绘制
-                            /// </summary>
-                private bool isCancel = false;
-                /// <summary>
-                            /// 是否取消点绘制
-                            /// </summary>
-                public bool IsCancel
-                {
-                    get { return isCancel; }
-                    set { isCancel = value; }
-                }
-            }
-
-            /// <summary>
-                    /// 添加一个点时激发事件
-                    /// </summary>
-            public static event AddHandle AddPoint;
-            #endregion
-            #region 总是设置polyline为一个虚构的点，在完成Drag后，此点会被移除
-            /// <summary>
-                    /// 总是设置polyline为一个虚构的点，在完成Drag后，此点会被移除
-                    /// </summary>
-            public void AddLatestVertex()
-            {
-                m_pts.Add(m_tempPoint);
-                Polyline pline = Entity as Polyline;
-                pline.AddVertexAt(pline.NumberOfVertices, new Point2d(m_tempPoint.X, m_tempPoint.Y), 0, 0, 0);
-                if (AddPoint != null)
-                {
-                    EventArgs e = new EventArgs(m_pts, m_pts.Count - 1);
-                    e.IsCancel = false;
-                    AddPoint(e);
-                    if (e.IsCancel)
-                    {
-                        RemoveLastVertex();
-                    }
-                }
-            }
-            #endregion
-
-            #region 取样
-            /// <summary>
-                    /// 取样
-                    /// </summary>
-                    /// <param name="prompts"></param>
-                    /// <returns></returns>
-            protected override SamplerStatus Sampler(JigPrompts prompts)
-            {
-                JigPromptPointOptions jigOpts = new JigPromptPointOptions();
-                jigOpts.UserInputControls = (UserInputControls.Accept3dCoordinates |
-                UserInputControls.NullResponseAccepted |
-                UserInputControls.NoNegativeResponseAccepted);
-                if (m_pts.Count == 0)
-                {
-                    jigOpts.Message = "\n请输入起点坐标 ";
-                }
-                else if (m_pts.Count > 0)
-                {
-                    jigOpts.BasePoint = m_pts[m_pts.Count - 1];
-                    jigOpts.UseBasePoint = true;
-                    jigOpts.Message = "\n请输入下一个点[或按ESC退出] ";
-                }
-                else
-                    return SamplerStatus.Cancel;
-                PromptPointResult res = prompts.AcquirePoint(jigOpts);
-                if (m_tempPoint == res.Value)
-                {
-                    return SamplerStatus.NoChange;
-                }
-                else if (res.Status == PromptStatus.OK)
-                {
-                    m_tempPoint = res.Value;
-                    return SamplerStatus.OK;
-                }
-                return SamplerStatus.Cancel;
-            }
-            #endregion
-
-            #region 更新
-            /// <summary>
-                    /// 更新
-                    /// </summary>
-                    /// <returns></returns>
-            protected override bool Update()
-            {
-                Polyline pline = Entity as Polyline;
-                pline.SetPointAt(pline.NumberOfVertices - 1, m_tempPoint.Convert2d(m_plane));
-                Matrix3d m = Matrix3d.Displacement(new Vector3d(0, 0, 1000));
-                pline.TransformBy(m);
-                return true;
-            }
-            #endregion        
+            db.SetCurrentLayer(curLayerName);
         }
-        */
+
+        //绘制橱窗移门侧剖
+        [CommandMethod("YMCP")]
+        public void YMCP()
+        {
+            Database db = HostApplicationServices.WorkingDatabase;
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            ed.WriteMessage("\n百福工具箱——绘制橱窗移门侧剖");
+            Point3d spt, ept;
+            string layerNameOld = db.GetCurrentLayerName();
+            PromptPointOptions ppo = new PromptPointOptions("\n给定移门下起点");
+            PromptPointResult ppr = ed.GetPoint(ppo);
+            if (ppr.Status == PromptStatus.OK)
+            {
+                spt = ppr.Value;
+                PromptPointOptions ppo1 = new PromptPointOptions("\n给定移门最高点")
+                {
+                    UseBasePoint = true,
+                    BasePoint = spt
+                };
+                PromptPointResult ppr1;
+                do
+                {
+                    ppr1 = ed.GetPoint(ppo1);
+                } while (ppr1.Status != PromptStatus.OK);
+                ept = ppr1.Value;                
+                using (Transaction trans = db.TransactionManager.StartTransaction())
+                {
+                    //计算铝材相关插入点坐标
+                    Point3d pt1 = new Point3d(spt.X + 22, spt.Y + 17, spt.Z);
+                    Point3d pt2 = new Point3d(spt.X + 64.5, spt.Y + 17, spt.Z);
+                    Point3d pt3 = new Point3d(spt.X, ept.Y, spt.Z);
+                    Point3d pt4 = new Point3d(pt3.X + 22, pt3.Y - 23, pt3.Z);
+                    Point3d pt5 = new Point3d(pt3.X + 64.5, pt3.Y - 23, pt3.Z);
+                    Point3d pt6 = new Point3d(spt.X + 17, spt.Y + 63, spt.Z);
+                    Point3d pt7 = new Point3d(spt.X + 17, ept.Y - 44, spt.Z);
+                    Point3d pt8 = new Point3d(spt.X + 59.5, spt.Y + 63, spt.Z);
+                    Point3d pt9 = new Point3d(spt.X + 59.5, ept.Y - 44, spt.Z);
+
+                    BlockTable bt = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
+                    BlockTableRecord btr = trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                    ObjectId spaceId = db.CurrentSpaceId;//获取当前空间（模型空间或图纸空间)
+                    //insert blocks
+                    string blockPath = Tools.GetCurrentPath() + @"\BaseDwgs\铝型材标准块库.dwg";
+                    db.ImportBlocksFromDWG(blockPath, "LC131");
+                    if (bt.Has("LC131"))
+                    {
+                        spaceId.InsertBlockReference("BF-铝材", "LC131", spt, new Scale3d(1), 0);
+                    }
+                    else
+                    {
+                        ed.WriteMessage("\n未找到名为LC131的图块");
+                    }
+
+                    db.ImportBlocksFromDWG(blockPath, "LC127");
+                    if (bt.Has("LC127"))
+                    {
+                        spaceId.InsertBlockReference("BF-铝材", "LC127", pt1, new Scale3d(1), 0);
+                        spaceId.InsertBlockReference("BF-铝材", "LC127", pt2, new Scale3d(1), 0);
+                    }
+                    else
+                    {
+                        ed.WriteMessage("\n未找到名为LC127的图块");
+                    }
+
+                    db.ImportBlocksFromDWG(blockPath, "LC129");
+                    if (bt.Has("LC129"))
+                    {
+                        spaceId.InsertBlockReference("BF-铝材", "LC129", pt4, new Scale3d(1), Math.PI * 0.5);
+                        spaceId.InsertBlockReference("BF-铝材", "LC129", pt5, new Scale3d(1), Math.PI * 0.5);
+                    }
+                    else
+                    { 
+                       ed.WriteMessage("\n未找到名为LC129的图块");
+                    }
+
+                    db.ImportBlocksFromDWG(blockPath, "LC130");
+                    if (bt.Has("LC130"))
+                    {
+                        spaceId.InsertBlockReference("BF-铝材", "LC130", pt3, new Scale3d(1), 0);
+                    }
+                    else
+                    {
+                        ed.WriteMessage("\n未找到名为LC130的图块");
+                    }
+                    //drawing glass
+                    db.OnlyOneGlass(pt6 ,pt7, 10);
+                    db.OnlyOneGlass(pt8, pt9, 10);
+                    //提交事务处理
+                    trans.Commit();
+                }                
+            }
+            else
+            {
+                ed.WriteMessage("\n你给的点不是一个合格点");
+            }
+            db.SetCurrentLayer(layerNameOld);
+        }
+
+        //绘制橱窗移门顶剖图
+        [CommandMethod("YMDP")]
+        public void YMDP()
+        {
+
+            Database db = HostApplicationServices.WorkingDatabase;
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            ed.WriteMessage("\n百福工具箱——绘制橱窗移门侧剖");
+            Point3d spt, ept;
+            string layerNameOld = db.GetCurrentLayerName();
+            PromptPointOptions ppo = new PromptPointOptions("\n给定起始点");
+            PromptPointResult ppr = ed.GetPoint(ppo);
+            if (ppr.Status == PromptStatus.OK)
+            {
+                spt = ppr.Value;
+                PromptPointOptions ppo1 = new PromptPointOptions("\n给定终止点")
+                {
+                    UseBasePoint = true,
+                    BasePoint = spt
+                };
+                PromptPointResult ppr1;
+                do
+                {
+                    ppr1 = ed.GetPoint(ppo1);
+                } while (ppr1.Status != PromptStatus.OK);
+                ept = ppr1.Value;
+                //确定移门数量
+                Vector2d vector = new Point2d(ept.X, ept.Y) - new Point2d(spt.X, spt.Y);
+                double nums = vector.Length / 800;
+                int num = (int)nums;
+                double ymkd = (vector.Length + ((num - 1) * 55)) / num;
+                if ((vector.Length /num) > 800)
+                {
+                    num += 1;
+                    ymkd = (vector.Length + ((num - 1) * 55)) / num;
+                }
+                //绘制移门轨道外框
+                Point2d lspt1 = new Point2d(spt.X, spt.Y);
+                Point2d lspt2 = new Point2d(ept.X, ept.Y);
+                Point2d lspt3 = lspt2.Polar(vector.Angle + Math.PI * 1.5, 86.5);
+                Point2d lspt4 = lspt1.Polar(vector.Angle + Math.PI * 1.5, 86.5);
+                db.AddPolyLineToModeSpace("BF-铝材", true, lspt1, lspt2, lspt3, lspt4);
+                //绘制移门顶剖面
+                using(Transaction trans = db.TransactionManager.StartTransaction())
+                {
+                    BlockTable bt = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
+                    BlockTableRecord btr = trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                    ObjectId spaceId = db.CurrentSpaceId;//获取当前空间（模型空间或图纸空间)
+                    //insert blocks
+                    string blockPath = Tools.GetCurrentPath() + @"\BaseDwgs\铝型材标准块库.dwg";
+                    db.ImportBlocksFromDWG(blockPath, "LC126");
+                    Point3d insertPt1 = spt.Polar(vector.Angle + Math.PI * 1.5, 22);
+                    Point3d insertPt2 = insertPt1.Polar(vector.Angle, ymkd);
+                    Point3d insertPt3 = insertPt1.Polar(vector.Angle + Math.Atan(5.0 / 40),Math.Sqrt(1625));
+                    Point3d insertPt4 = insertPt3.Polar(vector.Angle, ymkd - 80);
+                    for (int i = 0; i < num; i++)
+                    {
+                        spaceId.InsertBlockReference("BF-铝材", "LC126", insertPt1, new Scale3d(1), vector.Angle);
+                        spaceId.InsertBlockReference("BF-铝材", "LC126", insertPt2, new Scale3d(1), vector.Angle + Math.PI);
+                        db.OnlyOneGlass(insertPt3, insertPt4, 10);
+                        if (i%2 != 0)
+                        {
+                            insertPt1 = insertPt1.Polar(vector.Angle + Math.Atan(42.5 / (ymkd - 55)), Math.Sqrt(1806.25 + (ymkd - 55) * (ymkd - 55)));
+                            insertPt2 = insertPt2.Polar(vector.Angle + Math.Atan(42.5 / (ymkd - 55)), Math.Sqrt(1806.25 + (ymkd - 55) * (ymkd - 55)));
+                            insertPt3 = insertPt3.Polar(vector.Angle + Math.Atan(42.5 / (ymkd - 55)), Math.Sqrt(1806.25 + (ymkd - 55) * (ymkd - 55)));
+                            insertPt4 = insertPt4.Polar(vector.Angle + Math.Atan(42.5 / (ymkd - 55)), Math.Sqrt(1806.25 + (ymkd - 55) * (ymkd - 55)));
+                        }
+                        else
+                        {
+                            insertPt1 = insertPt1.Polar(vector.Angle - Math.Atan(42.5 / (ymkd - 55)), Math.Sqrt(1806.25 + (ymkd - 55) * (ymkd - 55)));
+                            insertPt2 = insertPt2.Polar(vector.Angle - Math.Atan(42.5 / (ymkd - 55)), Math.Sqrt(1806.25 + (ymkd - 55) * (ymkd - 55)));
+                            insertPt3 = insertPt3.Polar(vector.Angle - Math.Atan(42.5 / (ymkd - 55)), Math.Sqrt(1806.25 + (ymkd - 55) * (ymkd - 55)));
+                            insertPt4 = insertPt4.Polar(vector.Angle - Math.Atan(42.5 / (ymkd - 55)), Math.Sqrt(1806.25 + (ymkd - 55) * (ymkd - 55)));
+                        }
+                    }
+                    trans.Commit();
+                }
+            }
+            db.SetCurrentLayer(layerNameOld);
+        }
+
+        //绘制橱窗移门立面
+        [CommandMethod("YM")]
+        public void YM()
+        {
+
+        }
     }
 }

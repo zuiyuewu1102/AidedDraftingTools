@@ -31,13 +31,15 @@ namespace CommonClassLibrary
             //以写的方式打开空间（模型空间或图纸空间）
             BlockTableRecord space = (BlockTableRecord)spaceId.GetObject(OpenMode.ForWrite);
             //创建一个块参照并设置插入点
-            BlockReference br = new BlockReference(position, bt[blockName]);
-            //设置块参照的缩放比例
-            br.ScaleFactors = scale;
-            //设置块参照的层名
-            br.Layer = layer;
-            //设置块参照的旋转角度
-            br.Rotation = rotateAngle;
+            BlockReference br = new BlockReference(position, bt[blockName])
+            {
+                //设置块参照的缩放比例
+                ScaleFactors = scale,
+                //设置块参照的层名
+                Layer = layer,
+                //设置块参照的旋转角度
+                Rotation = rotateAngle
+            };
             //在空间中加入创建的块参照
             blockRefId = space.AppendEntity(br);
             //通知事务处理加入创建的块参照
@@ -72,13 +74,15 @@ namespace CommonClassLibrary
             //打开块表记录
             BlockTableRecord btr = (BlockTableRecord)btrId.GetObject(OpenMode.ForRead);
             //创建一个块参照并设置插入点
-            BlockReference br = new BlockReference(position, bt[blockName]);
-            //设置块参照的缩放比例
-            br.ScaleFactors = scale;
-            //设置块参照的图层
-            br.Layer = layer;
-            //设置块参照的旋转角度
-            br.Rotation = rotateAngle;
+            BlockReference br = new BlockReference(position, bt[blockName])
+            {
+                //设置块参照的缩放比例
+                ScaleFactors = scale,
+                //设置块参照的图层
+                Layer = layer,
+                //设置块参照的旋转角度
+                Rotation = rotateAngle
+            };
             //将块参照添加到模型空间
             space.AppendEntity(br);
 
@@ -162,8 +166,10 @@ namespace CommonClassLibrary
             if (!bt.Has(blockName))//判断是否存在名未blockName的块
             {
                 //创建一个BlockTableRecord类的对象，表示所要创建的块
-                BlockTableRecord btr = new BlockTableRecord();
-                btr.Name = blockName;
+                BlockTableRecord btr = new BlockTableRecord
+                {
+                    Name = blockName
+                };
                 //将列表中的实体加入到新建的BlockTableRecord对象
                 ents.ForEach(ent => btr.AppendEntity(ent));
                 bt.UpgradeOpen();

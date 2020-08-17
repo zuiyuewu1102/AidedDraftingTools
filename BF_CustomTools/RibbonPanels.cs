@@ -28,13 +28,20 @@ namespace BF_CustomTools
              //添加**命令按钮
             ribbonPanelSource1.Items.Add(RibbonButtonInfos.PSet);
             ribbonPanelSource1.Items.Add(RibbonButtonInfos.Hthj);
-            
 
             RibbonPanelSource ribbonPanelSource2 = ribbonTab.AddPanel("图层工具");//给选项卡添加面板
+            ribbonPanelSource2.Items.Add(RibbonButtonInfos.Zdgc);
             ribbonPanelSource2.Items.Add(RibbonButtonInfos.CurLayer);
 
             RibbonPanelSource ribbonPanelSource3 = ribbonTab.AddPanel("绘图工具");//给选项卡添加面板
             ribbonPanelSource3.Items.Add(RibbonButtonInfos.Szc);
+            ribbonPanelSource3.Items.Add(RibbonButtonInfos.Ymdp);
+            ribbonPanelSource3.Items.Add(RibbonButtonInfos.Ymcp);
+
+            RibbonPanelSource ribbonPanelSource4 = ribbonTab.AddPanel("图块工具");//给选项卡添加面板
+            ribbonPanelSource4.Items.Add(RibbonButtonInfos.Tk);
+            ribbonPanelSource4.Items.Add(RibbonButtonInfos.Cdj);
+
         }
     }
     public class RibbonButtonEX : RibbonButton
