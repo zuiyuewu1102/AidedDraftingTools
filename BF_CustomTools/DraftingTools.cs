@@ -1416,7 +1416,6 @@ namespace BF_CustomTools
         [CommandMethod("YMDP")]
         public void YMDP()
         {
-
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             ed.WriteMessage("\n百福工具箱——绘制橱窗移门侧剖");
@@ -1493,11 +1492,118 @@ namespace BF_CustomTools
             db.SetCurrentLayer(layerNameOld);
         }
 
-        //绘制橱窗移门立面
+        //绘制橱窗移门立面（玻璃填充未搞定，最好将图元的顺序调整一下）
         [CommandMethod("YM")]
         public void YM()
         {
+            Database db = HostApplicationServices.WorkingDatabase;
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            ed.WriteMessage("\n百福工具箱——绘制橱窗移门侧剖");
+            Point3d spt, ept;
+            string layerNameOld = db.GetCurrentLayerName();
+            PromptPointOptions ppo = new PromptPointOptions("\n给定起始点");
+            PromptPointResult ppr = ed.GetPoint(ppo);
+            if (ppr.Status == PromptStatus.OK)
+            {
+                spt = ppr.Value;
+                PromptPointOptions ppo1 = new PromptPointOptions("\n给定终止点")
+                {
+                    UseBasePoint = true,
+                    BasePoint = spt
+                };
+                PromptPointResult ppr1;
+                do
+                {
+                    ppr1 = ed.GetCorner(ppo1);
+                } while (ppr1.Status != PromptStatus.OK);
+                ept = ppr1.Value;
+                //确定移门数量                
+                double kd = Math.Max(spt.X, ept.X) - Math.Min(spt.X, ept.X);
+                double nums = kd / 800;
+                int num = (int)nums;
+                double ymkd = (kd + ((num - 1) * 55)) / num;
+                if ((kd / num) > 800)
+                {
+                    num += 1;
+                    ymkd = (kd + ((num - 1) * 55)) / num;
+                }
+                //绘制移门立面框架——底轨
+                Point2d[] points = new Point2d[]
+                {
+                    new Point2d(Math.Min(spt.X,ept.X),Math.Min(spt.Y,ept.Y)),
+                    new Point2d(Math.Max(spt.X,ept.X),Math.Min(spt.Y,ept.Y)),
+                    new Point2d(Math.Max(spt.X,ept.X),Math.Min(spt.Y,ept.Y)+12),
+                    new Point2d(Math.Min(spt.X,ept.X),Math.Min(spt.Y,ept.Y)+12)
+                };
+                db.AddPolyLineToModeSpace("BF-铝材",true,points);
+                //绘制移门立面框架——顶轨
+                points = new Point2d[]
+                {
+                    new Point2d(Math.Min(spt.X,ept.X),Math.Max(spt.Y,ept.Y)),
+                    new Point2d(Math.Min(spt.X,ept.X),Math.Max(spt.Y,ept.Y)-35),
+                    new Point2d(Math.Max(spt.X,ept.X),Math.Max(spt.Y,ept.Y)-35),
+                    new Point2d(Math.Max(spt.X,ept.X),Math.Max(spt.Y,ept.Y))
+                };
+                db.AddPolyLineToModeSpace("BF-铝材", true, points);
+                //绘制移门
+                points = new Point2d[]
+                {
+                    new Point2d(Math.Min(spt.X,ept.X),Math.Min(spt.Y,ept.Y)+17),
+                    new Point2d(Math.Min(spt.X,ept.X)+55,Math.Min(spt.Y,ept.Y)+17),
+                    new Point2d(Math.Min(spt.X,ept.X)+55,Math.Max(spt.Y,ept.Y)-35),
+                    new Point2d(Math.Min(spt.X,ept.X),Math.Max(spt.Y,ept.Y)-35)
+                };
+                db.AddPolyLineToModeSpace("BF-铝材", true, points);
+                Point2d[] points1 = new Point2d[]
+                {
+                    points[1],
+                    points[1].Polar(0,ymkd-110),
+                    points[1].Polar(Math.Atan(60.0/(ymkd-110)),Math.Sqrt(3600+(ymkd-110)*(ymkd-110))),
+                    points[1].Polar(Math.PI*0.5,60)
+                };
+                Point2d[] points2 = new Point2d[]
+                {
+                    points1[3],
+                    points1[2],
+                    points1[2].Polar(Math.PI*0.5,Math.Abs(spt.Y - ept.Y) -135),
+                    points1[3].Polar(Math.PI*0.5,Math.Abs(spt.Y - ept.Y) -135)
+                };
+                Point2d[] points3 = new Point2d[]
+                {
+                    points2[3],
+                    points2[2],
+                    points2[2].Polar(Math.PI*0.5,23),
+                    points2[3].Polar(Math.PI*0.5,23)
+                };
 
+                for (int i = 0; i < num; i++)
+                {
+                    db.AddPolyLineToModeSpace("BF-玻璃", true, points2);
+                    points2[0] = points2[0].Polar(0, ymkd - 55);
+                    points2[1] = points2[1].Polar(0, ymkd - 55);
+                    points2[2] = points2[2].Polar(0, ymkd - 55);
+                    points2[3] = points2[3].Polar(0, ymkd - 55);
+
+                    db.AddPolyLineToModeSpace("BF-铝材", true, points1);
+                    points1[0] = points1[0].Polar(0, ymkd - 55);
+                    points1[1] = points1[1].Polar(0, ymkd - 55);
+                    points1[2] = points1[2].Polar(0, ymkd - 55);
+                    points1[3] = points1[3].Polar(0, ymkd - 55);
+
+                    db.AddPolyLineToModeSpace("BF-铝材", true, points3);
+                    points3[0] = points3[0].Polar(0, ymkd - 55);
+                    points3[1] = points3[1].Polar(0, ymkd - 55);
+                    points3[2] = points3[2].Polar(0, ymkd - 55);
+                    points3[3] = points3[3].Polar(0, ymkd - 55);
+
+                    points[0] = points[0].Polar(0, ymkd - 55);
+                    points[1] = points[1].Polar(0, ymkd - 55);
+                    points[2] = points[2].Polar(0, ymkd - 55);
+                    points[3] = points[3].Polar(0, ymkd - 55);
+                    db.AddPolyLineToModeSpace("BF-铝材", true, points);
+                }
+            }
+            db.SetCurrentLayer(layerNameOld);
         }
     }
 }

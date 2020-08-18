@@ -25,8 +25,8 @@ namespace BF_CustomTools
             //RibbonPanelSource ribbonPanelSource0 = ribbonControl.Tabs[2].FindPanel("ID_PanelDimensions").Source;
 
             RibbonPanelSource ribbonPanelSource1 = ribbonTab.AddPanel("设置");//给选项卡添加面板
-             //添加**命令按钮
-            ribbonPanelSource1.Items.Add(RibbonButtonInfos.PSet);
+                                                                            
+            ribbonPanelSource1.Items.Add(RibbonButtonInfos.PSet);//添加**命令按钮
             ribbonPanelSource1.Items.Add(RibbonButtonInfos.Hthj);
 
             RibbonPanelSource ribbonPanelSource2 = ribbonTab.AddPanel("图层工具");//给选项卡添加面板
@@ -66,7 +66,7 @@ namespace BF_CustomTools
         }
 
         /// <summary>
-        /// 
+        /// 鼠标离开事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -83,7 +83,7 @@ namespace BF_CustomTools
         }
 
         /// <summary>
-        /// 
+        /// 鼠标进入事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
