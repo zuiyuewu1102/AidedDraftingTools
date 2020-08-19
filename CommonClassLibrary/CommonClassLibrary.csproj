@@ -66,6 +66,7 @@
     <Compile Include="BlockTools.cs" />
     <Compile Include="CUITools.cs" />
     <Compile Include="DimStyleTools.cs" />
+    <Compile Include="HatchTools.cs" />
     <Compile Include="LayerTools.cs" />
     <Compile Include="LineTypeTools.cs" />
     <Compile Include="MLineTools.cs" />

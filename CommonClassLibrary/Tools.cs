@@ -12,6 +12,7 @@ using Autodesk.AutoCAD.Runtime;
 using Autodesk.Windows;
 using System.Windows.Media.Imaging;
 using System.Security.Permissions;
+using System.Windows.Navigation;
 
 namespace CommonClassLibrary
 {
@@ -184,6 +185,29 @@ namespace CommonClassLibrary
                 trans.AddNewlyCreatedDBObject(pl, true);
                 trans.Commit();
             }
+        }
+        public static ObjectId AddPolyLineToModeSpace1(this Database db, string layerName, bool isClose, params Point2d[] points)
+        {
+            ObjectId id = new ObjectId();
+            db.SetCurrentLayer(layerName);
+            using (Transaction trans = db.TransactionManager.StartTransaction())
+            {
+                BlockTable bt = (BlockTable)trans.GetObject(db.BlockTableId, OpenMode.ForRead);
+                BlockTableRecord btr = (BlockTableRecord)trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
+                Polyline pl = new Polyline();
+                int i = 0;
+                foreach (Point2d pt in points)
+                {
+                    pl.AddVertexAt(i, pt, 0, 0, 0);
+                    i++;
+                }
+                pl.Closed = isClose;
+                pl.LinetypeScale = 3.0;
+                id = btr.AppendEntity(pl);
+                trans.AddNewlyCreatedDBObject(pl, true);
+                trans.Commit();
+            }
+            return id;
         }
 
         public static void AddPolyLineDXBToModeSpace(this Database db, string layerName, params Point2d[] points)
