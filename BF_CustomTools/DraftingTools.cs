@@ -1506,15 +1506,10 @@ namespace BF_CustomTools
             if (ppr.Status == PromptStatus.OK)
             {
                 spt = ppr.Value;
-                PromptPointOptions ppo1 = new PromptPointOptions("\n给定终止点")
-                {
-                    UseBasePoint = true,
-                    BasePoint = spt
-                };
                 PromptPointResult ppr1;
                 do
                 {
-                    ppr1 = ed.GetCorner(ppo1);
+                    ppr1 = ed.GetCorner("\n给定终止点",spt);
                 } while (ppr1.Status != PromptStatus.OK);
                 ept = ppr1.Value;
                 //确定移门数量                

@@ -58,7 +58,7 @@ namespace CommonClassLibrary
         /// <param name="scale">块参照的缩放比例</param>
         /// <param name="rotateAngle">块参照的旋转角度</param>
         /// <param name="attNameValues">属性的名称和取值</param>
-        /// <returns></returns>
+        /// <returns>ObjectId</returns>
         public static ObjectId InsertBlockReference(this ObjectId spaceId, string layer, string blockName, Point3d position, Scale3d scale, double rotateAngle, Dictionary<string, string> attNameValues)
         {
             //获取数据库对象

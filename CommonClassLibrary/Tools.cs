@@ -11,6 +11,7 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.Windows;
 using System.Windows.Media.Imaging;
+using System.Security.Permissions;
 
 namespace CommonClassLibrary
 {
@@ -793,6 +794,49 @@ namespace CommonClassLibrary
             ribbon.ToolTip = ribbonToolTip;
             return ribbonToolTip;
         }
+        /// <summary>
+        /// 移动图形
+        /// </summary>
+        /// <param name="entId">图形对象的ObjectId</param>
+        /// <param name="sorucePoint">参考原点</param>
+        /// <param name="targetPoint">参考终点</param>
+        public static void MoveEntity(this ObjectId entId,Point3d sorucePoint,Point3d targetPoint)
+        {
+            Database db = HostApplicationServices.WorkingDatabase;
+            using(Transaction trans = db.TransactionManager.StartTransaction())
+            {
+                //open BlockTable
+                BlockTable bt = (BlockTable)trans.GetObject(db.BlockTableId, OpenMode.ForRead);
+                //Open BlockTableRecord
+                BlockTableRecord btr = (BlockTableRecord)trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForRead);
+                //Open Entity
+                Entity ent = (Entity)entId.GetObject(OpenMode.ForWrite);
+
+                Vector3d vector = sorucePoint.GetVectorTo(targetPoint);
+                Matrix3d mt = Matrix3d.Displacement(vector);
+                ent.TransformBy(mt);
+
+            }
+        }
+        /// <summary>
+        ///  移动图形
+        /// </summary>
+        /// <param name="ent">图形对象</param>
+        /// <param name="sorucePoint">参考原点</param>
+        /// <param name="targetPoint">参考终点</param>
+        public static void MoveEntity(this Entity ent, Point3d sorucePoint, Point3d targetPoint)
+        {            
+            if (ent.IsNewObject)
+            {
+                Vector3d vector = sorucePoint.GetVectorTo(targetPoint);
+                Matrix3d mt = Matrix3d.Displacement(vector);
+                ent.TransformBy(mt);
+            }
+            else
+            {
+                ent.ObjectId.MoveEntity(sorucePoint, targetPoint);
+            }
+        }
 
         /// <summary>
         /// 复制图形
@@ -823,6 +867,34 @@ namespace CommonClassLibrary
             }
             return entR;
         }
+        /// <summary>
+        /// 复制图形
+        /// </summary>
+        /// <param name="ent">图形对象</param>
+        /// <param name="sorucePoint">参考起点</param>
+        /// <param name="targetPoint">参考终点</param>
+        /// <returns>图形对象</returns>
+        public static Entity CopyEntity(this Entity ent, Point3d sorucePoint, Point3d targetPoint)
+        {
+            Entity entR;
+            if (ent.IsNewObject)
+            {
+                Vector3d vector = sorucePoint.GetVectorTo(targetPoint);
+                Matrix3d mt = Matrix3d.Displacement(vector);
+                entR = ent.GetTransformedCopy(mt);
+            }
+            else
+            {
+                entR = ent.ObjectId.CopyEntity(sorucePoint, targetPoint);
+            }
+            return entR;
+        }
+        /// <summary>
+        /// 旋转图形
+        /// </summary>
+        /// <param name="entId">图形对象的ObjectId</param>
+        /// <param name="center">旋转中心点</param>
+        /// <param name="degree">旋转角度</param>
         public static void RotateEntity(this ObjectId entId, Point3d center, double degree)
         {
             Database db = HostApplicationServices.WorkingDatabase;
@@ -840,6 +912,28 @@ namespace CommonClassLibrary
                 //提交事务处理
                 trans.Commit();
             }
+        }
+
+        /// <summary>
+        /// 旋转图形
+        /// </summary>
+        /// <param name="ent">图形对象</param>
+        /// <param name="center">旋转中心点</param>
+        /// <param name="degree">旋转角度</param>
+        public static void RotateEntity(this Entity ent, Point3d center, double degree)
+        {
+           
+            if (ent.IsNewObject)
+            {
+
+                Matrix3d mt = Matrix3d.Rotation(degree, Vector3d.ZAxis, center);
+                ent.GetTransformedCopy(mt);
+            }
+            else
+            {
+               ent.ObjectId.RotateEntity(center, degree);
+            }
+           
         }
 
         /// <summary>
@@ -874,5 +968,86 @@ namespace CommonClassLibrary
             }
             return entR;
         }
+
+        public static void AddIden0(this Database db,Point3d insertPoint,double scale,string syNo)
+        {
+            string blkPath = GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
+            string blkName = "BF-IDEN";
+            double angle = Math.PI * 0.5;
+            
+            using(Transaction trans = db.TransactionManager.StartTransaction())
+            {
+                db.ImportBlocksFromDWG(blkPath, blkName);
+
+                for (int i = 0; i < 4; i++)
+                {
+                    Point3d pt0 = insertPoint.Polar(angle, scale * 7.1);
+                    
+                    ObjectId spaceId = db.CurrentSpaceId;
+                    Dictionary<string, string> atts = new Dictionary<string, string>
+                    {                        
+                        { "INDEXNO", syNo},
+                        { "PAGE", "-" }
+                    };
+                    ObjectId id = spaceId.InsertBlockReference("BF-索引", blkName, pt0, new Scale3d(scale), 0, atts);
+                    BlockReference br = trans.GetObject(id, OpenMode.ForWrite) as BlockReference;
+                    foreach (DynamicBlockReferenceProperty dbrp in br.DynamicBlockReferencePropertyCollection)
+                    {
+                        if (dbrp.PropertyName == "角度1")
+                        {
+                            dbrp.Value = angle - Math.PI *0.5;
+                        }
+                    }
+
+                    angle -= Math.PI * 0.5;
+                    string[] zmk = new string[]
+                    {
+                        "a","b","c","d","e","f","g","h","j","k","l","m","n","p","q","r","s","t","u","v","w","x","y","z",
+                        "A","B","C","D","E","F","G","H","J","K","L","M","N","P","Q","R","S","T","U","V","W","X","Y","Z"
+                    };
+                    
+                    for (int x = 0; x < zmk.Length; x++)
+                    {
+                        if (syNo == zmk[x])
+                        {
+                            syNo = zmk[x + 1];
+                            break;
+                        }
+                    }
+                }
+                trans.Commit();
+            }
+            
+        }
+
+        public static void AddIden1(this Database db, Point3d insertPoint, double scale, string syNo,double angle)
+        {
+            string blkPath = GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
+            string blkName = "BF-IDEN";            
+
+            using (Transaction trans = db.TransactionManager.StartTransaction())
+            {
+                db.ImportBlocksFromDWG(blkPath, blkName);
+
+                ObjectId spaceId = db.CurrentSpaceId;
+                Dictionary<string, string> atts = new Dictionary<string, string>
+                {
+                    { "INDEXNO", syNo},
+                    { "PAGE", "-" }
+                };
+                ObjectId id = spaceId.InsertBlockReference("BF-索引", blkName, insertPoint, new Scale3d(scale), 0, atts);
+                BlockReference br = trans.GetObject(id, OpenMode.ForWrite) as BlockReference;
+                foreach (DynamicBlockReferenceProperty dbrp in br.DynamicBlockReferencePropertyCollection)
+                {
+                    if (dbrp.PropertyName == "角度1")
+                    {
+                        dbrp.Value = angle - Math.PI *0.5;
+                    }
+                }                
+                trans.Commit();
+            }
+
+        }
+
     }
 }

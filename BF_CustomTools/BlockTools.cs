@@ -24,7 +24,11 @@ namespace BF_CustomTools
         public static string syNo;
         public static string page;
         public static Database acDb = Application.DocumentManager.MdiActiveDocument.Database;
-
+        public static string[] zmk = new string[]
+        {
+            "a","b","c","d","e","f","g","h","j","k","l","m","n","p","q","r","s","t","u","v","w","x","y","z",
+            "A","B","C","D","E","F","G","H","J","K","L","M","N","P","Q","R","S","T","U","V","W","X","Y","Z"
+        };
     }
     public class BlockTools
     {
@@ -152,7 +156,7 @@ namespace BF_CustomTools
             DateTime dt = DateTime.Now;
             string strTime = dt.ToString("yyyyMMddHHmmss");
             PublicValue.newBlockName = "BF" + strTime;
-            string blockName = "BF" + strTime;
+            //string blockName = "BF" + strTime;
 
             ed.WriteMessage("\n百福工具箱——修改块名");
 
@@ -555,19 +559,55 @@ namespace BF_CustomTools
         }
 
         //插入4合1索引符号
-        //[CommandMethod("I0")]
+        [CommandMethod("I0")]
         public void I0()
         {
-
+            Database db = HostApplicationServices.WorkingDatabase;
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            ed.WriteMessage("\n百福工具箱——插入组合标题索引");
+            PromptPointOptions ppo = new PromptPointOptions("\n给定索引组合的插入点");
+            PromptPointResult ppr = ed.GetPoint(ppo);
+            if (ppr.Status == PromptStatus.OK)
+            {
+                Point3d insertPoint = ppr.Value;
+                PromptStringOptions pso = new PromptStringOptions("\n给定起始索引符号<A>或者<1>")
+                {                    
+                    UseDefaultValue = true,
+                    DefaultValue = "A"
+                };
+                
+                PromptResult pr = ed.GetString(pso);
+                if (pr.Status == PromptStatus.OK)
+                {
+                    PublicValue.syNo = pr.StringResult;                    
+                }
+                else
+                {
+                    if (PublicValue.syNo == "")
+                    {
+                        PublicValue.syNo = "A";
+                    }
+                }
+                
+                int dimScale = System.Convert.ToInt32(Application.GetSystemVariable("DIMSCALE"));
+                db.AddIden0(insertPoint, dimScale, PublicValue.syNo);
+            }
         }
 
         //插入索引符号
-        //[CommandMethod("I1")]
+        [CommandMethod("I1")]
         public void I1()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
+            Database db = doc.Database;
             Editor ed = doc.Editor;
+            double angle = 0;
             ed.WriteMessage("\n百福工具箱——插入索引符号");
+            //开启正交
+            if (!db.Orthomode)
+            {
+                db.Orthomode = true;
+            }
 
             PromptPointOptions ppo = new PromptPointOptions("\n请选择插入点");
             PromptPointResult ppr = ed.GetPoint(ppo);
@@ -576,10 +616,39 @@ namespace BF_CustomTools
                 Point3d insertPt = ppr.Value;
                 PromptAngleOptions pao = new PromptAngleOptions("\n请输入索引符号的指向角度")
                 {
+                    UseBasePoint = true,
+                    BasePoint = insertPt,
                     AllowArbitraryInput = true,
                     DefaultValue = 0
                 };
 
+                PromptDoubleResult pdr = ed.GetAngle(pao);
+                if (pdr.Status == PromptStatus.OK)
+                {
+                    //这里得到的角度值为弧度值，手动输入的值会自动转化
+                     angle= pdr.Value;
+                }
+                PromptStringOptions pso = new PromptStringOptions("\n给定起始索引符号<A>或者<1>")
+                {
+                    UseDefaultValue = true,
+                    DefaultValue = "A"
+                };
+
+                PromptResult pr = ed.GetString(pso);
+                if (pr.Status == PromptStatus.OK)
+                {
+                    PublicValue.syNo = pr.StringResult;
+                }
+                else
+                {
+                    if (PublicValue.syNo == "")
+                    {
+                        PublicValue.syNo = "A";
+                    }
+                }
+
+                int dimScale = System.Convert.ToInt32(Application.GetSystemVariable("DIMSCALE"));
+                db.AddIden1(insertPt, dimScale, PublicValue.syNo,angle);
             }
         }
 
