@@ -355,7 +355,7 @@ namespace BF_CustomTools
             }
         }
 
-        //绘制玻璃(有点小Bug)
+        //绘制玻璃
         [CommandMethod("BL")]
         public void BL()
         {
@@ -427,7 +427,7 @@ namespace BF_CustomTools
             db.SetCurrentLayer(layerNameOld);
         }
         
-        //绘制石头板(有点小Bug)
+        //绘制石头板
         [CommandMethod("STB")]
         public void STB()
         {
@@ -1492,7 +1492,7 @@ namespace BF_CustomTools
             db.SetCurrentLayer(layerNameOld);
         }
 
-        //绘制橱窗移门立面（玻璃填充未搞定，最好将图元的顺序调整一下）
+        //绘制橱窗移门立面
         [CommandMethod("YM")]
         public void YM()
         {
@@ -1574,8 +1574,10 @@ namespace BF_CustomTools
                 for (int i = 0; i < num; i++)
                 {
                     ObjectId id = db.AddPolyLineToModeSpace1("BF-玻璃", true, points2);
-                    ObjectIdCollection ids = new ObjectIdCollection();
-                    ids.Add(id);
+                    ObjectIdCollection ids = new ObjectIdCollection
+                    {
+                        id
+                    };
                     points2[0] = points2[0].Polar(0, ymkd - 55);
                     points2[1] = points2[1].Polar(0, ymkd - 55);
                     points2[2] = points2[2].Polar(0, ymkd - 55);
