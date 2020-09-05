@@ -29,6 +29,7 @@ namespace BF_CustomTools
             "a","b","c","d","e","f","g","h","j","k","l","m","n","p","q","r","s","t","u","v","w","x","y","z",
             "A","B","C","D","E","F","G","H","J","K","L","M","N","P","Q","R","S","T","U","V","W","X","Y","Z"
         };
+        public static TypedValue[] values;
     }
     public class BlockTools
     {
@@ -108,7 +109,7 @@ namespace BF_CustomTools
             Editor ed = doc.Editor;
             ed.WriteMessage("\n百福工具箱——修改图块基点，现有同名块位置不变");
 
-            Point3d basePoint = new Point3d();
+            Point3d basePoint;
             PromptEntityOptions peo = new PromptEntityOptions("\n请选择要修改的图块");
             //peo.AddAllowedClass(typeof(BlockReference),false);
             PromptEntityResult per = ed.GetEntity(peo);
@@ -140,7 +141,6 @@ namespace BF_CustomTools
                     brf.DowngradeOpen();
                     trans.Commit();
                 }
-                
             }
             else return;
         }

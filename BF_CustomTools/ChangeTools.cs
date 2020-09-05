@@ -120,7 +120,7 @@ namespace BF_CustomTools
             else return;
         }
 
-        //[CommandMethod("KX")]
+        [CommandMethod("KX")]
         public void KX()
         {
             Document acDoc = Application.DocumentManager.MdiActiveDocument;

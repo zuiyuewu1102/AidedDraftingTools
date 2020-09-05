@@ -176,7 +176,7 @@ namespace BF_CustomTools
                     foreach (ObjectId id in ss.GetObjectIds())
                     {
                         DBText dBText = trans.GetObject(id, OpenMode.ForRead) as DBText;
-                        val = double.Parse(Tools.IntegerString(dBText.TextString)) / 1000;
+                        val = double.Parse(dBText.TextString.IntegerString()) / 1000;
                         PubVal.zongdianliang += val;
                     }
                 }

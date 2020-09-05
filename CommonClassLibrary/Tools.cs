@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using Autodesk.AutoCAD.ApplicationServices;
-
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
@@ -21,11 +20,17 @@ namespace CommonClassLibrary
     /// </summary>
     public static class Tools
     {
+        /// <summary>
+        /// 角度转弧度
+        /// </summary>
+        /// <param name="deg">角度值</param>
+        /// <returns>弧度值</returns>
         public static double Deg2Rad(double deg)
         {
             double rad = deg * 180 / Math.PI;
             return rad;
         }
+
         /// <summary>
         /// 判断字符串是否为数字
         /// </summary>
@@ -129,6 +134,7 @@ namespace CommonClassLibrary
             btr.DowngradeOpen();
             return ids;
         }
+
         /// <summary>
         /// 将矩形多段线添加到图纸空间
         /// </summary>
@@ -186,6 +192,15 @@ namespace CommonClassLibrary
                 trans.Commit();
             }
         }
+
+        /// <summary>
+        /// 添加多段线到模型空间
+        /// </summary>
+        /// <param name="db">图形数据库</param>
+        /// <param name="layerName">图层名</param>
+        /// <param name="isClose">是否闭合</param>
+        /// <param name="points">顶点坐标集</param>
+        /// <returns></returns>
         public static ObjectId AddPolyLineToModeSpace1(this Database db, string layerName, bool isClose, params Point2d[] points)
         {
             ObjectId id = new ObjectId();
@@ -210,6 +225,12 @@ namespace CommonClassLibrary
             return id;
         }
 
+        /// <summary>
+        /// 添加多段线到模型空间
+        /// </summary>
+        /// <param name="db">图形数据库</param>
+        /// <param name="layerName">图层名</param>
+        /// <param name="points">顶点坐标集</param>
         public static void AddPolyLineDXBToModeSpace(this Database db, string layerName, params Point2d[] points)
         {
             db.SetCurrentLayer(layerName);
@@ -332,7 +353,7 @@ namespace CommonClassLibrary
             var trans = ids[0].Database.TransactionManager;
             foreach (ObjectId id in ids)
             {
-                Entity ent = trans.GetObject(id, OpenMode.ForRead) as Entity;
+                Entity ent = (Entity)trans.GetObject(id, OpenMode.ForRead);
                 if (ent != null)
                 {
                     ent.Highlight();
@@ -704,29 +725,20 @@ namespace CommonClassLibrary
             return point;
         }
 
+        /// <summary>
+        /// 根据基点、角度、长度计算相对点
+        /// </summary>
+        /// <param name="basePt">基点</param>
+        /// <param name="angle">角度（弧度）</param>
+        /// <param name="len">长度</param>
+        /// <returns>Point3d</returns>
         public static Point3d Polar(this Point3d basePt, double angle, double len)
         {
             Point3d point = new Point3d(basePt.X + Math.Cos(angle) * len, basePt.Y + Math.Sin(angle) * len,basePt.Z);
 
             return point;
         }
-
-        /// <summary>
-        /// 将字符串中的数字和小数点转换出来
-        /// </summary>
-        /// <param name="str">需转换的字符串</param>
-        /// <returns></returns>
-        public static string IntegerString(string str)
-        {
-            string b = string.Empty;
-            for (int i = 0; i < str.Length; i++)
-            {
-                if (Char.IsDigit(str[i]) || str[i] == '.')
-                    b += str[i];
-            }
-            return b;
-        }
-
+                
         /// <summary>
         /// 添加Ribbon选项卡
         /// </summary>
@@ -788,6 +800,7 @@ namespace CommonClassLibrary
             panelSource.Items.Add(splitBtn);
             return splitBtn;
         }
+
         /// <summary>
         /// 添加命令按钮提示信息
         /// </summary>
@@ -818,6 +831,7 @@ namespace CommonClassLibrary
             ribbon.ToolTip = ribbonToolTip;
             return ribbonToolTip;
         }
+
         /// <summary>
         /// 移动图形
         /// </summary>
@@ -842,6 +856,7 @@ namespace CommonClassLibrary
 
             }
         }
+
         /// <summary>
         ///  移动图形
         /// </summary>
@@ -891,6 +906,7 @@ namespace CommonClassLibrary
             }
             return entR;
         }
+
         /// <summary>
         /// 复制图形
         /// </summary>
@@ -913,6 +929,7 @@ namespace CommonClassLibrary
             }
             return entR;
         }
+
         /// <summary>
         /// 旋转图形
         /// </summary>
@@ -961,12 +978,12 @@ namespace CommonClassLibrary
         }
 
         /// <summary>
-        /// 
+        /// 镜像图形
         /// </summary>
-        /// <param name="entId"></param>
-        /// <param name="pt1"></param>
-        /// <param name="pt2"></param>
-        /// <param name="isEraseSoruce"></param>
+        /// <param name="entId">图形对象的ObjectId</param>
+        /// <param name="pt1">对称线起点</param>
+        /// <param name="pt2">对称线起点</param>
+        /// <param name="isEraseSoruce">是否删除原图形</param>
         public static Entity MirrorEntity(this ObjectId entId,Point3d pt1,Point3d pt2,bool isEraseSoruce)
         {
             //声明一个图形对象用于返回
@@ -993,6 +1010,13 @@ namespace CommonClassLibrary
             return entR;
         }
 
+        /// <summary>
+        /// 插入4合1索引符号图块
+        /// </summary>
+        /// <param name="db">图形数据库</param>
+        /// <param name="insertPoint">插入点</param>
+        /// <param name="scale">插入比例</param>
+        /// <param name="syNo">索引起始编号</param>
         public static void AddIden0(this Database db,Point3d insertPoint,double scale,string syNo)
         {
             string blkPath = GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
@@ -1044,6 +1068,14 @@ namespace CommonClassLibrary
             
         }
 
+        /// <summary>
+        /// 插入索引符号
+        /// </summary>
+        /// <param name="db">图形数据库</param>
+        /// <param name="insertPoint">插入点</param>
+        /// <param name="scale">插入比例</param>
+        /// <param name="syNo">索引编号</param>
+        /// <param name="angle">插入角度</param>
         public static void AddIden1(this Database db, Point3d insertPoint, double scale, string syNo,double angle)
         {
             string blkPath = GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";

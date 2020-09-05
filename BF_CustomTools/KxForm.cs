@@ -24,14 +24,14 @@ namespace BF_CustomTools
             using(Transaction trans = db.TransactionManager.StartTransaction())
             {
                 LayerTable lt = (LayerTable)trans.GetObject(db.LayerTableId, OpenMode.ForRead);
-                foreach (ObjectId id in lt) 
+                foreach (ObjectId id in lt)
                 {
                     LayerTableRecord ltr = (LayerTableRecord)trans.GetObject(id, OpenMode.ForRead);
                     lynames.Add(ltr.Name);
                 }
                 trans.Commit();
             }
-            foreach(string name in lynames)
+            foreach (string name in lynames)
             {
                 LayercomboBox.Items.Add(name);
             }
@@ -94,7 +94,7 @@ namespace BF_CustomTools
         {
             Editor ed = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor;
             string xx = "";
-            if (TextradioButton.Checked) xx = "Text";
+            if (TextradioButton.Checked) xx = "DBText";
             else if (MtextradioButton.Checked) xx = "MText";
             else if (HatchradioButton.Checked) xx = "Hatch";
             else if (DimradioButton.Checked) xx = "Dim";
@@ -121,17 +121,35 @@ namespace BF_CustomTools
 
         }
 
-     /*   private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // KxForm
-            // 
-            this.AllowDrop = true;
-            this.ClientSize = new System.Drawing.Size(284, 261);
-            this.Name = "KxForm";
-            this.ResumeLayout(false);
+        //private void InitializeComponent()
+        //{
+        //    this.SuspendLayout();
+        //    // 
+        //    // KxForm
+        //    // 
+        //    this.ClientSize = new System.Drawing.Size(284, 261);
+        //    this.Name = "KxForm";
+        //    this.Load += new System.EventHandler(this.KxForm_Load_1);
+        //    this.ResumeLayout(false);
 
-        }*/
+        //}
+
+        private void KxForm_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
+        //private void InitializeComponent()
+        //{
+        //    this.SuspendLayout();
+        //    // 
+        //    // KxForm
+        //    // 
+        //    this.AllowDrop = true;
+        //    this.ClientSize = new System.Drawing.Size(284, 261);
+        //    this.Name = "KxForm";
+        //    this.ResumeLayout(false);
+
+        //}
     }
 }

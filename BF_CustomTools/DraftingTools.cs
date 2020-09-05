@@ -1582,7 +1582,7 @@ namespace BF_CustomTools
                     points2[1] = points2[1].Polar(0, ymkd - 55);
                     points2[2] = points2[2].Polar(0, ymkd - 55);
                     points2[3] = points2[3].Polar(0, ymkd - 55);
-                    db.HatchEntity(HatchTools.HatchPatterName.ro_rroof, 10, 45, ids);
+                    db.HatchEntity(HatchTools.HatchPatterName.ar_rroof, 10, 45, ids);
 
                     db.AddPolyLineToModeSpace("BF-铝材", true, points1);
                     points1[0] = points1[0].Polar(0, ymkd - 55);

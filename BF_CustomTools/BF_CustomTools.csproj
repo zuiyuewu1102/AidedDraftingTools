@@ -77,6 +77,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnotationTools.cs" />
+    <Compile Include="AutoCounter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoCounter.Designer.cs">
+      <DependentUpon>AutoCounter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BlockManage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BlockManage.Designer.cs">
+      <DependentUpon>BlockManage.cs</DependentUpon>
+    </Compile>
     <Compile Include="BlockTools.cs" />
     <Compile Include="ChangeTools.cs" />
     <Compile Include="DLJSForm.cs">
@@ -89,10 +101,23 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormDIC.Designer.cs" />
+    <Compile Include="FormDIC1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FormDIC.resx</DependentUpon>
+    </Compile>
+    <Compile Include="KX.xaml.cs">
+      <DependentUpon>KX.xaml</DependentUpon>
+    </Compile>
     <Compile Include="KxForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="KxForm.Designer.cs" />
+    <Compile Include="KxForm1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>KxForm.resx</DependentUpon>
+    </Compile>
     <Compile Include="RibbonPanels.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -139,11 +164,23 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AutoCounter.resx">
+      <DependentUpon>AutoCounter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BlockManage.resx">
+      <DependentUpon>BlockManage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DLJSForm.resx">
       <DependentUpon>DLJSForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormDIC.resx" />
-    <EmbeddedResource Include="KxForm.resx" />
+    <EmbeddedResource Include="FormDIC.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FormDIC1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KxForm.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>KxForm1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -160,6 +197,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\LOGO.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\blockManage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="KX.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
