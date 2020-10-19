@@ -51,7 +51,7 @@ namespace BF_CustomTools
             //acPre.Display.GraphicsWinModelBackgrndColor = 1;
         }
 
-        //[CommandMethod("SD")]
+        [CommandMethod("SD")]
         public void SD()
         {
             Editor ed = acDoc.Editor;

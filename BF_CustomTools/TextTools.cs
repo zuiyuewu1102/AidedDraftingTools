@@ -23,8 +23,8 @@ namespace BF_CustomTools
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             ed.WriteMessage("\n百福工具箱——用户词库管理");
             //加载显示窗体
-            FormDIC form = new FormDIC();
-            Application.ShowModalDialog(form);
+            //FormDIC form = new FormDIC();
+            //Application.ShowModalDialog(form);
         }
 
         //提取文本中的数字的和
@@ -80,14 +80,14 @@ namespace BF_CustomTools
             Editor ed = doc.Editor;
             ed.WriteMessage("\n百福工具箱——递增文本");
             //输入增量值
-            PromptIntegerOptions pio = new PromptIntegerOptions("\n请输入增量值<1>")
-            {
-                DefaultValue = 1,
-                AllowZero = false,
-                AllowNone = true
-            };
-            PromptIntegerResult pir = ed.GetInteger(pio);
-            int zl = pir.Value;
+            //PromptIntegerOptions pio = new PromptIntegerOptions("\n请输入增量值<1>")
+            //{
+            //    DefaultValue = 1,
+            //    AllowZero = false,
+            //    AllowNone = true
+            //};
+            //PromptIntegerResult pir = ed.GetInteger(pio);
+            //int zl = pir.Value;
             //选择文本
             TypedValue[] typeval = new TypedValue[1];
             typeval.SetValue(new TypedValue((int)DxfCode.Start, "TEXT"), 0);
@@ -121,7 +121,6 @@ namespace BF_CustomTools
                                 ent = (Entity)trans.GetObject(id, OpenMode.ForRead);
                                 Entity ent1 = ent.CopyEntity(spt, ept);
                                 DBText dbt = (DBText)ent1;
-
                                 trans.Commit();
                             }
                             spt = ept;

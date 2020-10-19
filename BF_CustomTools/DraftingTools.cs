@@ -1605,5 +1605,111 @@ namespace BF_CustomTools
             }
             db.SetCurrentLayer(layerNameOld);
         }
+
+        //绘制柜台翻门
+        [CommandMethod("FM")]
+        public void FM()
+        {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Editor ed = doc.Editor;
+            ed.WriteMessage("\n百福工具箱——绘制柜台翻门");
+            Point3d pt1,pt2,spt, ept;
+            double mdw, fmw, fmh;
+
+            PromptPointOptions ppo1 = new PromptPointOptions("\n请输入起始点");
+            PromptPointResult ppr1 = ed.GetPoint(ppo1);
+            if (ppr1.Status == PromptStatus.OK)
+            {
+                pt1 = ppr1.Value;
+                PromptPointOptions ppo2;
+                PromptPointResult ppr2;
+                do
+                {
+                    ppo2 = new PromptPointOptions("\n请输入对焦点")
+                    {
+                        UseBasePoint = true,
+                        BasePoint = pt1
+                    };
+                    ppr2 = ed.GetCorner(ppo2);
+                } while (ppr2.Status != PromptStatus.OK);
+                pt2 = ppr2.Value;
+                spt = new Point3d(Math.Min(pt1.X, pt2.X), Math.Min(pt1.Y, pt2.Y), 0);
+                ept = new Point3d(Math.Max(pt1.X, pt2.X), Math.Max(pt1.Y, pt2.Y), 0);
+                mdw = ept.X - spt.X;
+                fmh = ept.Y - spt.Y - 5;
+                //根据门洞长度确定立柱、翻门数量和计算翻门长度
+                if (mdw < 1200)
+                {
+
+                }
+            }
+
+            
+        }
+
+        //绘制柜腿
+        [CommandMethod("GT")]
+        public void GT()
+        {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Editor ed = doc.Editor;
+            Database db = doc.Database;
+            String blkname = "铝腿01";
+
+            ed.WriteMessage("\n百福工具箱——插入柜腿");
+
+            //输入插入块的类型
+            PromptKeywordOptions pKeyOpts = new PromptKeywordOptions("")
+            {
+                Message = "\n选择相应的图块类型"
+            };
+            pKeyOpts.Keywords.Add("D顶视");
+            pKeyOpts.Keywords.Add("L立面");
+            
+            pKeyOpts.Keywords.Default = "L立面";
+            pKeyOpts.AllowNone = false;
+            PromptResult pKeyRes = ed.GetKeywords(pKeyOpts);
+            if (pKeyRes.Status == PromptStatus.Keyword || pKeyRes.Status == PromptStatus.OK)
+            {
+                if (pKeyRes.StringResult == "L立面")
+                {
+                    blkname = blkname + "LM";
+                }
+                else
+                {
+                    blkname = blkname + "DS";
+                }                
+            }
+
+            //输入块参照插入的点
+            //PromptPointResult ppr = ed.GetPoint("\n请选择插入点");
+            //Point3d pt = ppr.Value;
+
+            //using (Transaction trans = db.TransactionManager.StartTransaction())
+            //{
+            //    LayerTable lt = (LayerTable)trans.GetObject(db.LayerTableId, OpenMode.ForRead);
+            //    if (lt.Has("BF-图框"))
+            //    {
+            //        //string xckPath = @"F:\Aided Drafting Tools\Aided Drafting Tools\BaseDwgs\图框.dwg";
+            //        string xckPath = Tools.GetCurrentPath() + @"\BaseDwgs\图框.dwg";
+
+            //        db.ImportBlocksFromDWG(xckPath, blkname);
+            //        //提取当前图形的标注比例
+            //        int dimScale = System.Convert.ToInt32(Application.GetSystemVariable("DIMSCALE"));
+            //        Application.DocumentManager.MdiActiveDocument.Editor.WriteMessage(dimScale.ToString());
+
+            //        //表示属性的字典对象
+            //        Dictionary<string, string> atts = new Dictionary<string, string>();
+
+            //        ObjectId spaceId = db.CurrentSpaceId;//获取当前空间（模型空间或图纸空间）
+            //        spaceId.InsertBlockReference("BF-图框", blkname, pt, new Scale3d(dimScale), 0, atts);
+            //    }
+            //    else
+            //    {
+            //        ed.WriteMessage("\n没有发现图层：\"BF-图框\"");
+            //    }
+            //    trans.Commit();
+            //}
+        }
     }
 }

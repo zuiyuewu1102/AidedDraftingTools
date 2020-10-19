@@ -24,6 +24,7 @@ namespace BF_CustomTools
         public static string syNo;
         public static string page;
         public static Database acDb = Application.DocumentManager.MdiActiveDocument.Database;
+        public static string blkname;
         public static string[] zmk = new string[]
         {
             "a","b","c","d","e","f","g","h","j","k","l","m","n","p","q","r","s","t","u","v","w","x","y","z",

@@ -128,8 +128,8 @@ namespace BF_CustomTools
             Editor ed = acDoc.Editor;
             ed.WriteMessage("\n百福工具箱——快速选择");
             //加载显示窗体
-            KxForm form = new KxForm();
-            Application.ShowModalDialog(form);
+            //KxForm form = new KxForm();
+            //Application.ShowModalDialog(form);
             //获取选择的类型
         }
 
