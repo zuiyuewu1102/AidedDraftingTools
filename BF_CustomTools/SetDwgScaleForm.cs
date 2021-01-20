@@ -17,8 +17,6 @@ namespace BF_CustomTools
         public SetDwgScaleForm()
         {
             InitializeComponent();
-            
-
         }
 
         private void listBoxGlobalScale_SelectedIndexChanged(object sender, EventArgs e)
@@ -32,8 +30,8 @@ namespace BF_CustomTools
             {
                 listBoxLocalScale.Enabled = true;
                 textBox2.Enabled = true;
-            }                
-            else 
+            }
+            else
             {
                 listBoxLocalScale.Enabled = false;
                 textBox2.Enabled = false;
@@ -42,8 +40,6 @@ namespace BF_CustomTools
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Hide();
-
             string message = string.Empty;
 
             if (checkBox1.Checked == true)

@@ -119,21 +119,42 @@ namespace BF_CustomTools
         {
            
         }
-
-        //有问题
-        //[CommandMethod("JB")]
+        
+        [CommandMethod("JB")]
         public void JB()
         {
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             string curLayerName = db.GetCurrentLayerName();
             ed.WriteMessage("\n百福工具箱——绘制夹层板截面");
-
             db.SetCurrentLayer("BF-产品线");
+            double t;
+            PromptDoubleOptions pdo = new PromptDoubleOptions("\n请输入夹层板的厚度");
+            pdo.DefaultValue = 12.0;
+            PromptDoubleResult pdr = ed.GetDouble(pdo);
+            if (pdr.Status == PromptStatus.Keyword) t = 12.0;
+            else
+            {
+                if (pdr.Status != PromptStatus.OK) return;
+                t = pdr.Value;
+            }
+            PromptPointOptions optPoint = new PromptPointOptions("\n请拾取夹层板起点坐标");
+            PromptPointResult resPoint = ed.GetPoint(optPoint);
+            if (resPoint.Status != PromptStatus.OK) return;
+            Point3d spt = resPoint.Value;
+            PromptPointOptions ppo = new PromptPointOptions("\n请拾取夹层板终点坐标");
+            ppo.UseBasePoint = true;
+            ppo.BasePoint = spt;
+            PromptPointResult ppr = ed.GetPoint(ppo);
+            if (ppr.Status != PromptStatus.OK) return;
+            Point3d ept = ppr.Value;
+            JiaCengBanJig mGBJig = new JiaCengBanJig(spt, ept, t);
+            PromptResult resJig = ed.Drag(mGBJig);
+            if (resJig.Status == PromptStatus.OK)
+            {
+                Tools.AddToModelSpace(db, mGBJig.GetEntity());
+            }
 
-            //Matrix3d mt = ed.CurrentUserCoordinateSystem;
-            //Vector3d normal = mt.CoordinateSystem3d.Zaxis;
-            
             db.SetCurrentLayer(curLayerName);
         }
 
@@ -1673,11 +1694,11 @@ namespace BF_CustomTools
             {
                 if (pKeyRes.StringResult == "L立面")
                 {
-                    blkname = blkname + "LM";
+                    blkname += "LM";
                 }
                 else
                 {
-                    blkname = blkname + "DS";
+                    blkname += "DS";
                 }                
             }
 
