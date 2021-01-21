@@ -158,6 +158,82 @@ namespace BF_CustomTools
             db.SetCurrentLayer(curLayerName);
         }
 
+        //绘制玻璃截面
+        [CommandMethod("BL")]
+        public void BL()
+        {
+            Database db = HostApplicationServices.WorkingDatabase;
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            string curLayerName = db.GetCurrentLayerName();
+            ed.WriteMessage("\n百福工具箱——绘制玻璃截面");
+            db.SetCurrentLayer("BF-玻璃");
+            double t;
+            PromptDoubleOptions pdo = new PromptDoubleOptions("\n请输入玻璃的厚度");
+            pdo.DefaultValue = 10.0;
+            PromptDoubleResult pdr = ed.GetDouble(pdo);
+            if (pdr.Status == PromptStatus.Keyword) t = 12.0;
+            else
+            {
+                if (pdr.Status != PromptStatus.OK) return;
+                t = pdr.Value;
+            }
+            PromptPointOptions optPoint = new PromptPointOptions("\n请拾取玻璃起点坐标");
+            PromptPointResult resPoint = ed.GetPoint(optPoint);
+            if (resPoint.Status != PromptStatus.OK) return;
+            Point3d spt = resPoint.Value;
+            PromptPointOptions ppo = new PromptPointOptions("\n请拾取玻璃终点坐标");
+            ppo.UseBasePoint = true;
+            ppo.BasePoint = spt;
+            PromptPointResult ppr = ed.GetPoint(ppo);
+            if (ppr.Status != PromptStatus.OK) return;
+            Point3d ept = ppr.Value;
+            BoLiJig boliJig = new BoLiJig(spt, ept, t);
+            PromptResult resJig = ed.Drag(boliJig);
+            if (resJig.Status == PromptStatus.OK)
+            {
+                Tools.AddToModelSpace(db, boliJig.GetEntity());
+            }
+
+            db.SetCurrentLayer(curLayerName);
+        }
+
+        //绘制石材截面
+        [CommandMethod("STB")]
+        public void STB()
+        {
+            Database db = HostApplicationServices.WorkingDatabase;
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            string curLayerName = db.GetCurrentLayerName();
+            ed.WriteMessage("\n百福工具箱——绘制石材截面");
+            db.SetCurrentLayer("BF-石材");
+            double t;
+            PromptDoubleOptions pdo = new PromptDoubleOptions("\n请输入石材的厚度");
+            pdo.DefaultValue = 13.0;
+            PromptDoubleResult pdr = ed.GetDouble(pdo);
+            if (pdr.Status == PromptStatus.Keyword) t = 13.0;
+            else
+            {
+                if (pdr.Status != PromptStatus.OK) return;
+                t = pdr.Value;
+            }
+            PromptPointOptions optPoint = new PromptPointOptions("\n请拾取石材起点坐标");
+            PromptPointResult resPoint = ed.GetPoint(optPoint);
+            if (resPoint.Status != PromptStatus.OK) return;
+            Point3d spt = resPoint.Value;
+            PromptPointOptions ppo = new PromptPointOptions("\n请拾取石材终点坐标");
+            ppo.UseBasePoint = true;
+            ppo.BasePoint = spt;
+            PromptPointResult ppr = ed.GetPoint(ppo);
+            if (ppr.Status != PromptStatus.OK) return;
+            Point3d ept = ppr.Value;
+            ShiTouBanJig shiTouBanJig = new ShiTouBanJig(spt, ept, t);
+            PromptResult resJig = ed.Drag(shiTouBanJig);
+            if (resJig.Status == PromptStatus.OK)
+            {
+                Tools.AddToModelSpace(db, shiTouBanJig.GetEntity());
+            }
+            db.SetCurrentLayer(curLayerName);
+        }
         //绘制皮革板截面
         [CommandMethod("PGB")]
         public void PGB()
@@ -376,18 +452,18 @@ namespace BF_CustomTools
             }
         }
 
-        //绘制玻璃
-        [CommandMethod("BL")]
-        public void BL()
+        //绘制连续玻璃截面
+        [CommandMethod("BL1")]
+        public void BL1()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
-            ed.WriteMessage("\n百福工具箱——绘制玻璃截面");
+            ed.WriteMessage("\n百福工具箱——绘制连续玻璃截面");
             List<Point3d> points = new List<Point3d>();
             string layerNameOld = db.GetCurrentLayerName();
             int t = 10;
-
+            //设置玻璃的默认厚度
             PromptIntegerOptions pio = new PromptIntegerOptions("\n请输入玻璃厚度")
             {
                 DefaultValue = 10
@@ -420,7 +496,7 @@ namespace BF_CustomTools
                     {
                         i++;
                         points.Add(ppr1.Value);
-                        ppo1.Message = "\n指定下一点或结束";                        
+                        ppo1.Message = "\n指定下一点或结束";
                         ppo1.BasePoint = points[i];
                         ppr1 = ed.GetPoint(ppo1);
                     } while (ppr1.Status != PromptStatus.None);
@@ -448,14 +524,14 @@ namespace BF_CustomTools
             db.SetCurrentLayer(layerNameOld);
         }
         
-        //绘制石头板
-        [CommandMethod("STB")]
-        public void STB()
+        //绘制连续石头板
+        [CommandMethod("STB1")]
+        public void STB1()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
-            ed.WriteMessage("\n百福工具箱——绘制石材截面");
+            ed.WriteMessage("\n百福工具箱——绘制连续石材截面");
             List<Point3d> points = new List<Point3d>();
             string layerNameOld = db.GetCurrentLayerName();
             int t = 13;
