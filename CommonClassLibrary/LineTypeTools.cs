@@ -17,9 +17,10 @@ namespace CommonClassLibrary
             {
                 lt.UpgradeOpen();
 
-                LinetypeTableRecord ltr = new LinetypeTableRecord();
-
-                ltr.Name = typeName;
+                LinetypeTableRecord ltr = new LinetypeTableRecord
+                {
+                    Name = typeName
+                };
 
                 lt.Add(ltr);
 

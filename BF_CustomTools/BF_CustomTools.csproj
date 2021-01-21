@@ -33,25 +33,28 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AcCoreMgd, Version=20.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.ObjectARX.2016.1.0.0\lib\AcCoreMgd.dll</HintPath>
+    <Reference Include="AcCoreMgd">
+      <HintPath>..\..\ObjectARX 2016\inc\AcCoreMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="AcCui, Version=20.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.ObjectARX.2016.1.0.0\lib\AcCui.dll</HintPath>
+    <Reference Include="AcCui">
+      <HintPath>..\..\ObjectARX 2016\inc\AcCui.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="AcDbMgd, Version=20.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.ObjectARX.2016.1.0.0\lib\AcDbMgd.dll</HintPath>
+    <Reference Include="AcDbMgd">
+      <HintPath>..\..\ObjectARX 2016\inc\AcDbMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="acdbmgdbrep, Version=20.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.ObjectARX.2016.1.0.0\lib\acdbmgdbrep.dll</HintPath>
+    <Reference Include="AcMgd">
+      <HintPath>..\..\ObjectARX 2016\inc\AcMgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="AcDx, Version=20.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.ObjectARX.2016.1.0.0\lib\AcDx.dll</HintPath>
+    <Reference Include="AdWindows">
+      <HintPath>..\..\ObjectARX 2016\inc\AdWindows.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AcMgd, Version=20.1.0.0, Culture=neutral, processorArchitecture=MSIL">

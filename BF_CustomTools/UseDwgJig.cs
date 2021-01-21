@@ -306,5 +306,6 @@ namespace BF_CustomTools
         {
             return Entity;
         }
+        double m_gap;
     }
 }

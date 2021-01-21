@@ -19,12 +19,12 @@ namespace BF_CustomTools
             InitializeComponent();
         }
 
-        private void listBoxGlobalScale_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBoxGlobalScale_SelectedIndexChanged(object sender, EventArgs e)
         {
             textBox1.Text = listBoxGlobalScale.SelectedItem.ToString().Substring(2);
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox1.Checked == true)
             {
@@ -38,7 +38,7 @@ namespace BF_CustomTools
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             string message = string.Empty;
 

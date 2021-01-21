@@ -36,10 +36,11 @@ namespace CommonClassLibrary
 
             if (!dst.Has(styleName))
             {
-                DimStyleTableRecord dstr = new DimStyleTableRecord();
-
-                dstr.Name = styleName;
-                dstr.Dimscale = 12;
+                DimStyleTableRecord dstr = new DimStyleTableRecord
+                {
+                    Name = styleName,
+                    Dimscale = 12
+                };
                 dst.UpgradeOpen();
                 dst.Add(dstr);
                 db.TransactionManager.AddNewlyCreatedDBObject(dstr, true);
@@ -54,13 +55,14 @@ namespace CommonClassLibrary
 
             if (!dst.Has(styleName))
             {
-                DimStyleTableRecord dstr = new DimStyleTableRecord();
-
-                dstr.Name = styleName;
-                dstr.Dimasz = dimasz;
-                dstr.Dimexe = dimexe;
-                dstr.Dimtad = dimtad;
-                dstr.Dimtxt = dimtxt;
+                DimStyleTableRecord dstr = new DimStyleTableRecord
+                {
+                    Name = styleName,
+                    Dimasz = dimasz,
+                    Dimexe = dimexe,
+                    Dimtad = dimtad,
+                    Dimtxt = dimtxt
+                };
 
                 dst.UpgradeOpen();
                 dst.Add(dstr);
@@ -328,12 +330,14 @@ namespace CommonClassLibrary
                 {
                     Database db = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Database;
                     TextStyleTable tst1 = (TextStyleTable)transaction.GetObject(db.TextStyleTableId, OpenMode.ForWrite, true, true);
-                    TextStyleTableRecord tstr1 = new TextStyleTableRecord();
-                    tstr1.Name = TextStyleName;
-                    tstr1.FileName = FontName;
-                    tstr1.XScale = 1;
-                    tstr1.ObliquingAngle = Tools.Deg2Rad(ObliqueAng);
-                    tstr1.Annotative = AnnotativeStates.True;
+                    TextStyleTableRecord tstr1 = new TextStyleTableRecord
+                    {
+                        Name = TextStyleName,
+                        FileName = FontName,
+                        XScale = 1,
+                        ObliquingAngle = Tools.Deg2Rad(ObliqueAng),
+                        Annotative = AnnotativeStates.True
+                    };
                     tst1.Add(tstr1);
                     transaction.TransactionManager.AddNewlyCreatedDBObject(tstr1, true);
                     transaction.Commit();
