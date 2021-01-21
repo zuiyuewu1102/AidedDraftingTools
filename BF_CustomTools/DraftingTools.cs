@@ -6,6 +6,7 @@ using Autodesk.AutoCAD.Runtime;
 using CommonClassLibrary;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -123,23 +124,31 @@ namespace BF_CustomTools
         [CommandMethod("JB")]
         public void JB()
         {
-            Database db = HostApplicationServices.WorkingDatabase;
-            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            string curLayerName = db.GetCurrentLayerName();
+            PublicValue.doc = Application.DocumentManager.MdiActiveDocument;
+            Database db = PublicValue.doc.Database;
+            Editor ed = PublicValue.doc.Editor;
+            PublicValue.curLayerName = db.GetCurrentLayerName();
             ed.WriteMessage("\n百福工具箱——绘制夹层板截面");
             db.SetCurrentLayer("BF-产品线");
-            double t;
-            PromptDoubleOptions pdo = new PromptDoubleOptions("\n请输入夹层板的厚度");
-            pdo.DefaultValue = 12.0;
-            PromptDoubleResult pdr = ed.GetDouble(pdo);
-            if (pdr.Status == PromptStatus.Keyword) t = 12.0;
-            else
-            {
-                if (pdr.Status != PromptStatus.OK) return;
-                t = pdr.Value;
-            }
-            PromptPointOptions optPoint = new PromptPointOptions("\n请拾取夹层板起点坐标");
+            //读取数据库中的数据
+            string dataPath = "DataSource=" + Tools.GetCurrentPath() + "\\BaseData.db";
+            SQLiteConnection con = new SQLiteConnection(dataPath);
+            SQLiteCommand cmd = new SQLiteCommand();
+            cmd.Connection = con;
+            cmd.CommandText = "select Thickness from MaterialThickness Where MaterialName = 'WoodPlate'";
+            con.Open();
+            PublicValue.thickness = Convert.ToDouble(cmd.ExecuteScalar().ToString());
+            con.Close();
+            string tishitxt = "\n当前木板厚度为" + PublicValue.thickness.ToString() + "\n请拾取夹层板起点坐标或[设置厚度(S)]";
+            PromptPointOptions optPoint = new PromptPointOptions(tishitxt);
+            optPoint.Keywords.Add("S");
             PromptPointResult resPoint = ed.GetPoint(optPoint);
+            if(resPoint.Status == PromptStatus.Keyword)
+            {
+                SetWoodPlateThickness swpt = new SetWoodPlateThickness();
+                swpt.ShowDialog();
+                return;
+            }
             if (resPoint.Status != PromptStatus.OK) return;
             Point3d spt = resPoint.Value;
             PromptPointOptions ppo = new PromptPointOptions("\n请拾取夹层板终点坐标");
@@ -148,14 +157,14 @@ namespace BF_CustomTools
             PromptPointResult ppr = ed.GetPoint(ppo);
             if (ppr.Status != PromptStatus.OK) return;
             Point3d ept = ppr.Value;
-            JiaCengBanJig mGBJig = new JiaCengBanJig(spt, ept, t);
+            JiaCengBanJig mGBJig = new JiaCengBanJig(spt, ept, PublicValue.thickness);
             PromptResult resJig = ed.Drag(mGBJig);
             if (resJig.Status == PromptStatus.OK)
             {
                 Tools.AddToModelSpace(db, mGBJig.GetEntity());
             }
 
-            db.SetCurrentLayer(curLayerName);
+            db.SetCurrentLayer(PublicValue.curLayerName);
         }
 
         //绘制玻璃截面

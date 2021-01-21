@@ -31,6 +31,10 @@ namespace BF_CustomTools
             "A","B","C","D","E","F","G","H","J","K","L","M","N","P","Q","R","S","T","U","V","W","X","Y","Z"
         };
         public static TypedValue[] values;
+        //用在DraftingTools中
+        public static Document doc; 
+        public static string curLayerName;
+        public static double thickness;
     }
     public class BlockTools
     {
