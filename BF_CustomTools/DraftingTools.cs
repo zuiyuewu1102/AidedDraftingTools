@@ -198,7 +198,7 @@ namespace BF_CustomTools
             Point3d ept = ppr.Value;
             BoLiJig boliJig = new BoLiJig(spt, ept, t);
             PromptResult resJig = ed.Drag(boliJig);
-            if (resJig.Status == PromptStatus.OK)
+            if (resJig.Status == PromptStatus.OK || resJig.Status == PromptStatus.Keyword)
             {
                 Tools.AddToModelSpace(db, boliJig.GetEntity());
             }

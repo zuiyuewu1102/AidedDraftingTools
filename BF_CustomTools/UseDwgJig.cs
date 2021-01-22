@@ -133,13 +133,28 @@ namespace BF_CustomTools
         }
         protected override SamplerStatus Sampler(JigPrompts prompts)
         {
-            JigPromptPointOptions optJig = new JigPromptPointOptions("\n移动鼠标确定翻转方向");
+            JigPromptPointOptions optJig = new JigPromptPointOptions("\n移动鼠标确定翻转方向或[中线偏移(C)]");
+            optJig.Keywords.Add("C");
             PromptPointResult resJig = prompts.AcquirePoint(optJig);
             Point3d curPt = resJig.Value;
 
             if (resJig.Status == PromptStatus.Cancel)
             {
                 return SamplerStatus.Cancel;
+            }
+            else if(resJig.Status == PromptStatus.Keyword)
+            {
+                Vector2d vec1 = m_pts[1] - m_pts[0];
+                m_pts[0] = LinshiFangfa.PolarPoint(m_pts[0], vec1.Angle - LinshiFangfa.Rad2Ang(90.0), m_t / 2);
+                m_pts[1] = LinshiFangfa.PolarPoint(m_pts[1], vec1.Angle - LinshiFangfa.Rad2Ang(90.0), m_t / 2);
+                m_pts[2] = LinshiFangfa.PolarPoint(m_pts[1], vec1.Angle + LinshiFangfa.Rad2Ang(45.0), Math.Sqrt(2));
+                m_pts[3] = LinshiFangfa.PolarPoint(m_pts[2], vec1.Angle + LinshiFangfa.Rad2Ang(90.0), m_t - 2);
+                m_pts[4] = LinshiFangfa.PolarPoint(m_pts[1], vec1.Angle + LinshiFangfa.Rad2Ang(90.0), m_t);
+                m_pts[5] = LinshiFangfa.PolarPoint(m_pts[0], vec1.Angle + LinshiFangfa.Rad2Ang(90.0), m_t);
+                m_pts[6] = LinshiFangfa.PolarPoint(m_pts[5], vec1.Angle + LinshiFangfa.Rad2Ang(225.0), Math.Sqrt(2));
+                m_pts[7] = LinshiFangfa.PolarPoint(m_pts[6], vec1.Angle + LinshiFangfa.Rad2Ang(270.0), m_t - 2);
+                bool isUpdate = Update();
+                if(isUpdate) return SamplerStatus.OK;
             }
             if (m_peakPt != curPt)
             {
