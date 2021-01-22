@@ -158,6 +158,12 @@
     <Compile Include="SetDwgScaleForm.Designer.cs">
       <DependentUpon>SetDwgScaleForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SetGlassThicknessForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetGlassThicknessForm.Designer.cs">
+      <DependentUpon>SetGlassThicknessForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SetWoodPlateThickness.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -206,6 +212,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SetDwgScaleForm.resx">
       <DependentUpon>SetDwgScaleForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetGlassThicknessForm.resx">
+      <DependentUpon>SetGlassThicknessForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SetWoodPlateThickness.resx">
       <DependentUpon>SetWoodPlateThickness.cs</DependentUpon>

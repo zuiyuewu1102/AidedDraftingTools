@@ -130,12 +130,14 @@ namespace BF_CustomTools
             PublicValue.curLayerName = db.GetCurrentLayerName();
             ed.WriteMessage("\n百福工具箱——绘制夹层板截面");
             db.SetCurrentLayer("BF-产品线");
-            //读取数据库中的数据
+            //读取数据库中的夹层板厚度数据
             string dataPath = "DataSource=" + Tools.GetCurrentPath() + "\\BaseData.db";
             SQLiteConnection con = new SQLiteConnection(dataPath);
-            SQLiteCommand cmd = new SQLiteCommand();
-            cmd.Connection = con;
-            cmd.CommandText = "select Thickness from MaterialThickness Where MaterialName = 'WoodPlate'";
+            SQLiteCommand cmd = new SQLiteCommand
+            {
+                Connection = con,
+                CommandText = "select Thickness from MaterialThickness Where MaterialName = 'WoodPlate'"
+            };
             con.Open();
             PublicValue.thickness = Convert.ToDouble(cmd.ExecuteScalar().ToString());
             con.Close();
@@ -151,9 +153,11 @@ namespace BF_CustomTools
             }
             if (resPoint.Status != PromptStatus.OK) return;
             Point3d spt = resPoint.Value;
-            PromptPointOptions ppo = new PromptPointOptions("\n请拾取夹层板终点坐标");
-            ppo.UseBasePoint = true;
-            ppo.BasePoint = spt;
+            PromptPointOptions ppo = new PromptPointOptions("\n请拾取夹层板终点坐标")
+            {
+                UseBasePoint = true,
+                BasePoint = spt
+            };
             PromptPointResult ppr = ed.GetPoint(ppo);
             if (ppr.Status != PromptStatus.OK) return;
             Point3d ept = ppr.Value;
@@ -176,27 +180,36 @@ namespace BF_CustomTools
             string curLayerName = db.GetCurrentLayerName();
             ed.WriteMessage("\n百福工具箱——绘制玻璃截面");
             db.SetCurrentLayer("BF-玻璃");
-            double t;
-            PromptDoubleOptions pdo = new PromptDoubleOptions("\n请输入玻璃的厚度");
-            pdo.DefaultValue = 10.0;
-            PromptDoubleResult pdr = ed.GetDouble(pdo);
-            if (pdr.Status == PromptStatus.Keyword) t = 12.0;
-            else
-            {
-                if (pdr.Status != PromptStatus.OK) return;
-                t = pdr.Value;
-            }
-            PromptPointOptions optPoint = new PromptPointOptions("\n请拾取玻璃起点坐标");
+            //读取数据库中的夹层板厚度数据
+            string dataPath = "DataSource=" + Tools.GetCurrentPath() + "\\BaseData.db";
+            SQLiteConnection con = new SQLiteConnection(dataPath);
+            SQLiteCommand cmd = new SQLiteCommand();
+            cmd.Connection = con;
+            cmd.CommandText = "select Thickness from MaterialThickness Where MaterialName = 'Glass'";
+            con.Open();
+            PublicValue.thickness = Convert.ToDouble(cmd.ExecuteScalar().ToString());
+            con.Close();
+            string tishitxt = "\n当前玻璃厚度为" + PublicValue.thickness.ToString() + "\n请拾取玻璃起点坐标或[设置厚度(S)]";
+            PromptPointOptions optPoint = new PromptPointOptions(tishitxt);
+            optPoint.Keywords.Add("S");
             PromptPointResult resPoint = ed.GetPoint(optPoint);
+            if (resPoint.Status == PromptStatus.Keyword)
+            {
+                SetGlassThicknessForm sgtf = new SetGlassThicknessForm();
+                sgtf.ShowDialog();
+                return;
+            }
             if (resPoint.Status != PromptStatus.OK) return;
             Point3d spt = resPoint.Value;
-            PromptPointOptions ppo = new PromptPointOptions("\n请拾取玻璃终点坐标");
-            ppo.UseBasePoint = true;
-            ppo.BasePoint = spt;
+            PromptPointOptions ppo = new PromptPointOptions("\n请拾取玻璃终点坐标")
+            {
+                UseBasePoint = true,
+                BasePoint = spt
+            };
             PromptPointResult ppr = ed.GetPoint(ppo);
             if (ppr.Status != PromptStatus.OK) return;
             Point3d ept = ppr.Value;
-            BoLiJig boliJig = new BoLiJig(spt, ept, t);
+            BoLiJig boliJig = new BoLiJig(spt, ept, PublicValue.thickness);
             PromptResult resJig = ed.Drag(boliJig);
             if (resJig.Status == PromptStatus.OK || resJig.Status == PromptStatus.Keyword)
             {
@@ -216,8 +229,10 @@ namespace BF_CustomTools
             ed.WriteMessage("\n百福工具箱——绘制石材截面");
             db.SetCurrentLayer("BF-石材");
             double t;
-            PromptDoubleOptions pdo = new PromptDoubleOptions("\n请输入石材的厚度");
-            pdo.DefaultValue = 13.0;
+            PromptDoubleOptions pdo = new PromptDoubleOptions("\n请输入石材的厚度")
+            {
+                DefaultValue = 13.0
+            };
             PromptDoubleResult pdr = ed.GetDouble(pdo);
             if (pdr.Status == PromptStatus.Keyword) t = 13.0;
             else
@@ -229,9 +244,11 @@ namespace BF_CustomTools
             PromptPointResult resPoint = ed.GetPoint(optPoint);
             if (resPoint.Status != PromptStatus.OK) return;
             Point3d spt = resPoint.Value;
-            PromptPointOptions ppo = new PromptPointOptions("\n请拾取石材终点坐标");
-            ppo.UseBasePoint = true;
-            ppo.BasePoint = spt;
+            PromptPointOptions ppo = new PromptPointOptions("\n请拾取石材终点坐标")
+            {
+                UseBasePoint = true,
+                BasePoint = spt
+            };
             PromptPointResult ppr = ed.GetPoint(ppo);
             if (ppr.Status != PromptStatus.OK) return;
             Point3d ept = ppr.Value;
