@@ -1,0 +1,39 @@
+;;; 
+;;;          &                & & &          & & & & & & &
+;;;         & &               &     &              &
+;;;        &   &              &      &             &
+;;;       &     &             &       &            &
+;;;      & & & & &            &       &            &
+;;;     &         &           &      &             &
+;;;    &           &          &     &              &
+;;;   &             &         & & &                &
+;;; 
+;;;	  用户预定图层文件 layers.txt
+;;;     ● 用命令 HTHJ 可按此表新建图层；
+;;;     ● 用命令 erc 可调出此列表以替换图中已有图层；
+;;;     ● 分号";"后面是注释，行首加分号则暂时取消该行。
+;;;
+;;; 格式: 图层名称,颜色号(1-255),线型名称,线宽,是否打印该层(yes/no),说明
+BF-标注,7,Continuous,15,yes,
+BF-玻璃,4,Continuous,15,yes,
+BF-不锈钢,27,Continuous,15,yes,
+BF-产品线,146,Continuous,15,yes,
+BF-灯具,2,Continuous,15,yes,
+BF-电路,6,Continuous,15,yes,
+BF-辅助,1,ACAD_ISO14W100,15,yes,
+BF-铝材,43,Continuous,15,yes,
+BF-铝塑板,6,Continuous,15,yes,
+BF-木浆板,8,Continuous,15,yes,
+BF-皮革,3,Continuous,15,yes,
+BF-墙布,53,Continuous,15,yes,
+BF-墙体,7,Continuous,40,yes,
+BF-石材,5,Continuous,15,yes,
+BF-索引,3,Continuous,15,yes,
+BF-填充,250,Continuous,9,yes,
+BF-图框,125,Continuous,15,yes,
+BF-文字说明,33,Continuous,15,yes,
+BF-细线,250,Continuous,9,yes,
+BF-修改,1,Continuous,15,yes,
+BF-虚线,250,ACAD_ISO03W100,9,yes,
+BF-有机板,9,Continuous,15,yes,
+BF-中心线,1,ACAD_ISO04W100,9,yes,
