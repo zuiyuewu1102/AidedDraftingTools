@@ -183,9 +183,11 @@ namespace BF_CustomTools
             //读取数据库中的夹层板厚度数据
             string dataPath = "DataSource=" + Tools.GetCurrentPath() + "\\BaseData.db";
             SQLiteConnection con = new SQLiteConnection(dataPath);
-            SQLiteCommand cmd = new SQLiteCommand();
-            cmd.Connection = con;
-            cmd.CommandText = "select Thickness from MaterialThickness Where MaterialName = 'Glass'";
+            SQLiteCommand cmd = new SQLiteCommand
+            {
+                Connection = con,
+                CommandText = "select Thickness from MaterialThickness Where MaterialName = 'Glass'"
+            };
             con.Open();
             PublicValue.thickness = Convert.ToDouble(cmd.ExecuteScalar().ToString());
             con.Close();
