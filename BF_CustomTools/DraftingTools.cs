@@ -260,6 +260,7 @@ namespace BF_CustomTools
             }
             db.SetCurrentLayer(curLayerName);
         }
+
         //绘制皮革板截面
         [CommandMethod("PGB")]
         public void PGB()

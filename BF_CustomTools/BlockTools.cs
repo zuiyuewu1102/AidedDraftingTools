@@ -522,7 +522,7 @@ namespace BF_CustomTools
         }
 
         //插入标题
-        //[CommandMethod("BT")]
+        [CommandMethod("BT")]
         public void BT()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
