@@ -120,18 +120,5 @@ namespace BF_CustomTools
             else return;
         }
 
-        [CommandMethod("KX")]
-        public void KX()
-        {
-            Document acDoc = Application.DocumentManager.MdiActiveDocument;
-            //Database db = acDoc.Database;
-            Editor ed = acDoc.Editor;
-            ed.WriteMessage("\n百福工具箱——快速选择");
-            //加载显示窗体
-            //KxForm form = new KxForm();
-            //Application.ShowModalDialog(form);
-            //获取选择的类型
-        }
-
     }
 }
