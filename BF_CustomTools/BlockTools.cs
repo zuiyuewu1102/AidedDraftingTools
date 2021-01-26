@@ -106,7 +106,7 @@ namespace BF_CustomTools
         }
         
         //修改图块基点，现有同名块位置不变
-        //[CommandMethod("BBI")]
+        [CommandMethod("BBI")]
         public void BBI()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
@@ -656,66 +656,117 @@ namespace BF_CustomTools
         }
 
         //布置开孔
-        [CommandMethod("BK1")]
-        public void BK1()
-        {
-            Database db = HostApplicationServices.WorkingDatabase;
-            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("\n[百福工具箱]——均布螺丝孔");
+        //[CommandMethod("BK1")]
+        //public void BK1()
+        //{
+        //    Database db = HostApplicationServices.WorkingDatabase;
+        //    Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+        //    ed.WriteMessage("\n[百福工具箱]——均布螺丝孔");
 
-            string blkPath = Tools.GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
-            string blkname = "DK5";
+        //    string blkPath = Tools.GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
+        //    string blkname = "DK5";
 
-            PromptPointOptions ppo = new PromptPointOptions("\n给定起始点");
-            PromptPointResult ppr = ed.GetPoint(ppo);
-            if (ppr.Status == PromptStatus.OK)
-            {
-                Point3d insertPoint = ppr.Value;
-                Point2d spt = new Point2d(ppr.Value.X,ppr.Value.Y);
-                PromptPointOptions ppo1 = new PromptPointOptions("\n给定终止点");
-                PromptPointResult ppr1;
-                do
-                {
-                    ppo1.UseBasePoint = true;
-                    ppo1.BasePoint = ppr.Value;
-                    ppr1 = ed.GetPoint(ppo1);
-                } while (ppr1.Status != PromptStatus.OK);
-                Point2d ept = new Point2d(ppr1.Value.X,ppr1.Value.Y);
-                Vector2d vector = ept - spt;
-                double nums = vector.Length / 250;
-                int num = (int)nums;
-                double jj = vector.Length / num;
-                while (jj>250)
-                {
-                    num += 1;
-                    jj = vector.Length / num;
-                }
+        //    PromptPointOptions ppo = new PromptPointOptions("\n给定起始点");
+        //    PromptPointResult ppr = ed.GetPoint(ppo);
+        //    if (ppr.Status == PromptStatus.OK)
+        //    {
+        //        Point3d insertPoint = ppr.Value;
+        //        Point2d spt = new Point2d(ppr.Value.X,ppr.Value.Y);
+        //        PromptPointOptions ppo1 = new PromptPointOptions("\n给定终止点");
+        //        PromptPointResult ppr1;
+        //        do
+        //        {
+        //            ppo1.UseBasePoint = true;
+        //            ppo1.BasePoint = ppr.Value;
+        //            ppr1 = ed.GetPoint(ppo1);
+        //        } while (ppr1.Status != PromptStatus.OK);
+        //        Point2d ept = new Point2d(ppr1.Value.X,ppr1.Value.Y);
+        //        Vector2d vector = ept - spt;
+        //        double nums = vector.Length / 250;
+        //        int num = (int)nums;
+        //        double jj = vector.Length / num;
+        //        while (jj>250)
+        //        {
+        //            num += 1;
+        //            jj = vector.Length / num;
+        //        }
 
-                using(Transaction trans = db.TransactionManager.StartTransaction())
-                {
-                    db.ImportBlocksFromDWG(blkPath, blkname);
-                    ObjectId spaceId = db.CurrentSpaceId;//获取当前空间（模型空间或图纸空间）
-                    spaceId.InsertBlockReference("BF-不锈钢", blkname,insertPoint, new Scale3d(1), 0);
-                    for (int i = 0; i < num; i++)
-                    {
-                        insertPoint = insertPoint.Polar(vector.Angle, jj);
-                        spaceId.InsertBlockReference("BF-不锈钢", blkname, insertPoint, new Scale3d(1), 0);
-                    }
-                    trans.Commit();
-                }
-            }
-        }
+        //        using(Transaction trans = db.TransactionManager.StartTransaction())
+        //        {
+        //            db.ImportBlocksFromDWG(blkPath, blkname);
+        //            ObjectId spaceId = db.CurrentSpaceId;//获取当前空间（模型空间或图纸空间）
+        //            spaceId.InsertBlockReference("BF-不锈钢", blkname,insertPoint, new Scale3d(1), 0);
+        //            for (int i = 0; i < num; i++)
+        //            {
+        //                insertPoint = insertPoint.Polar(vector.Angle, jj);
+        //                spaceId.InsertBlockReference("BF-不锈钢", blkname, insertPoint, new Scale3d(1), 0);
+        //            }
+        //            trans.Commit();
+        //        }
+        //    }
+        //}
 
         //布置开孔
-        [CommandMethod("BK2")]
-        public void BK2()
+        //[CommandMethod("BK2")]
+        //public void BK2()
+        //{
+        //    Database db = HostApplicationServices.WorkingDatabase;
+        //    Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+        //    ed.WriteMessage("\n[百福工具箱]——均布双螺丝孔");
+
+        //    string blkPath = Tools.GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
+        //    string blkname = "SK5_10";
+
+        //    PromptPointOptions ppo = new PromptPointOptions("\n给定起始点");
+        //    PromptPointResult ppr = ed.GetPoint(ppo);
+        //    if (ppr.Status == PromptStatus.OK)
+        //    {
+        //        Point3d insertPoint = ppr.Value;
+        //        Point2d spt = new Point2d(ppr.Value.X, ppr.Value.Y);
+        //        PromptPointOptions ppo1 = new PromptPointOptions("\n给定终止点");
+        //        PromptPointResult ppr1;
+        //        do
+        //        {
+        //            ppo1.UseBasePoint = true;
+        //            ppo1.BasePoint = ppr.Value;
+        //            ppr1 = ed.GetPoint(ppo1);
+        //        } while (ppr1.Status != PromptStatus.OK);
+        //        Point2d ept = new Point2d(ppr1.Value.X, ppr1.Value.Y);
+        //        Vector2d vector = ept - spt;
+        //        double nums = vector.Length / 250;
+        //        int num = (int)nums;
+        //        double jj = vector.Length / num;
+        //        while (jj > 250)
+        //        {
+        //            num += 1;
+        //            jj = vector.Length / num;
+        //        }
+
+        //        using (Transaction trans = db.TransactionManager.StartTransaction())
+        //        {
+        //            db.ImportBlocksFromDWG(blkPath, blkname);
+        //            ObjectId spaceId = db.CurrentSpaceId;//获取当前空间（模型空间或图纸空间）
+        //            spaceId.InsertBlockReference("BF-不锈钢", blkname, insertPoint, new Scale3d(1), 0);
+        //            for (int i = 0; i < num; i++)
+        //            {
+        //                insertPoint = insertPoint.Polar(vector.Angle, jj);
+        //                spaceId.InsertBlockReference("BF-不锈钢", blkname, insertPoint, new Scale3d(1), 0);
+        //            }
+        //            trans.Commit();
+        //        }
+        //    }
+        //}
+
+        [CommandMethod("AH")]
+        public void ArrangeHoles()
         {
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("\n[百福工具箱]——均布双螺丝孔");
-
+            ed.WriteMessage("\n[百福工具箱]——均布开孔");
             string blkPath = Tools.GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
-            string blkname = "SK5_10";
+
+            SelectHoleForm selectHoleForm = new SelectHoleForm();
+            selectHoleForm.ShowDialog();
 
             PromptPointOptions ppo = new PromptPointOptions("\n给定起始点");
             PromptPointResult ppr = ed.GetPoint(ppo);
@@ -733,29 +784,33 @@ namespace BF_CustomTools
                 } while (ppr1.Status != PromptStatus.OK);
                 Point2d ept = new Point2d(ppr1.Value.X, ppr1.Value.Y);
                 Vector2d vector = ept - spt;
-                double nums = vector.Length / 250;
+                PromptDoubleOptions pdo = new PromptDoubleOptions("\n给定间距");
+                pdo.Keywords.Add("220.0");
+                pdo.DefaultValue = 220.0;
+                PromptDoubleResult pdr = ed.GetDouble(pdo);
+                if (pdr.Status != PromptStatus.OK && pdr.Status != PromptStatus.Keyword) return;
+                double dis = pdr.Value;
+                double nums = vector.Length / dis;
                 int num = (int)nums;
                 double jj = vector.Length / num;
-                while (jj > 250)
+                while (jj > dis)
                 {
                     num += 1;
                     jj = vector.Length / num;
                 }
-
                 using (Transaction trans = db.TransactionManager.StartTransaction())
                 {
-                    db.ImportBlocksFromDWG(blkPath, blkname);
+                    db.ImportBlocksFromDWG(blkPath, PublicValue.blkname);
                     ObjectId spaceId = db.CurrentSpaceId;//获取当前空间（模型空间或图纸空间）
-                    spaceId.InsertBlockReference("BF-不锈钢", blkname, insertPoint, new Scale3d(1), 0);
+                    spaceId.InsertBlockReference(db.GetCurrentLayerName(), PublicValue.blkname, insertPoint, new Scale3d(1), 0);
                     for (int i = 0; i < num; i++)
                     {
                         insertPoint = insertPoint.Polar(vector.Angle, jj);
-                        spaceId.InsertBlockReference("BF-不锈钢", blkname, insertPoint, new Scale3d(1), 0);
+                        spaceId.InsertBlockReference(db.GetCurrentLayerName(), PublicValue.blkname, insertPoint, new Scale3d(1), 0);
                     }
                     trans.Commit();
                 }
-            }
+            }            
         }
-
     }
 }

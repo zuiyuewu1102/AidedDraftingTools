@@ -37,5 +37,23 @@ namespace BF_CustomTools
         {
             this.Close();
         }
+
+        private void PicBox1_Click(object sender, EventArgs e)
+        {
+            RadioBtnH5.Checked = true;
+            PublicValue.blkname = "DK5";
+        }
+
+        private void PicBox2_Click(object sender, EventArgs e)
+        {
+            RadioBtnH510S.Checked = true;
+            PublicValue.blkname = "SK5_10S";
+        }
+
+        private void PicBox3_Click(object sender, EventArgs e)
+        {
+            RadioBtnH510X.Checked = true;
+            PublicValue.blkname = "SK5_10X";
+        }
     }
 }
