@@ -21,7 +21,7 @@ namespace BF_CustomTools
         //设置CUI文件的名字，将其路径设置为当前运行目录
         string cuiFile = Tools.GetCurrentPath() + "BF Tools.cuix";
         //菜单组名
-        string menuGroupName = "百福工具箱";
+        string menuGroupName = "[百福工具箱]";
         //获得活动文档
         Document activeDoc = Application.DocumentManager.MdiActiveDocument;
 
@@ -63,8 +63,8 @@ namespace BF_CustomTools
             StringCollection sc = new StringCollection();
             sc.Add("MyPop1");
 
-            //添加名为“百福工具箱”的下拉菜单，如果存在则返回null
-            PopMenu myMenu = cs.MenuGroup.AddPopMenu("百福工具箱", sc, "ID_MyMenu");
+            //添加名为“[百福工具箱]”的下拉菜单，如果存在则返回null
+            PopMenu myMenu = cs.MenuGroup.AddPopMenu("[百福工具箱]", sc, "ID_MyMenu");
 
             if(myMenu != null)
             {

@@ -128,7 +128,7 @@ namespace BF_CustomTools
             Database db = PublicValue.doc.Database;
             Editor ed = PublicValue.doc.Editor;
             PublicValue.curLayerName = db.GetCurrentLayerName();
-            ed.WriteMessage("\n百福工具箱——绘制夹层板截面");
+            ed.WriteMessage("\n[百福工具箱]——绘制夹层板截面");
             db.SetCurrentLayer("BF-产品线");
             //读取数据库中的夹层板厚度数据
             string dataPath = "DataSource=" + Tools.GetCurrentPath() + "\\BaseData.db";
@@ -178,7 +178,7 @@ namespace BF_CustomTools
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             string curLayerName = db.GetCurrentLayerName();
-            ed.WriteMessage("\n百福工具箱——绘制玻璃截面");
+            ed.WriteMessage("\n[百福工具箱]——绘制玻璃截面");
             db.SetCurrentLayer("BF-玻璃");
             //读取数据库中的夹层板厚度数据
             string dataPath = "DataSource=" + Tools.GetCurrentPath() + "\\BaseData.db";
@@ -228,7 +228,7 @@ namespace BF_CustomTools
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             string curLayerName = db.GetCurrentLayerName();
-            ed.WriteMessage("\n百福工具箱——绘制石材截面");
+            ed.WriteMessage("\n[百福工具箱]——绘制石材截面");
             db.SetCurrentLayer("BF-石材");
             double t;
             PromptDoubleOptions pdo = new PromptDoubleOptions("\n请输入石材的厚度")
@@ -488,7 +488,7 @@ namespace BF_CustomTools
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
-            ed.WriteMessage("\n百福工具箱——绘制连续玻璃截面");
+            ed.WriteMessage("\n[百福工具箱]——绘制连续玻璃截面");
             List<Point3d> points = new List<Point3d>();
             string layerNameOld = db.GetCurrentLayerName();
             int t = 10;
@@ -560,7 +560,7 @@ namespace BF_CustomTools
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
-            ed.WriteMessage("\n百福工具箱——绘制连续石材截面");
+            ed.WriteMessage("\n[百福工具箱]——绘制连续石材截面");
             List<Point3d> points = new List<Point3d>();
             string layerNameOld = db.GetCurrentLayerName();
             int t = 13;
@@ -634,7 +634,7 @@ namespace BF_CustomTools
             Database db = doc.Database;
             Editor ed = doc.Editor;
             Point2d pt1, pt2, pt3, pt4;
-            ed.WriteMessage("\n百福工具箱——绘制柜桶铝后框");
+            ed.WriteMessage("\n[百福工具箱]——绘制柜桶铝后框");
 
             string curLayerName = db.GetCurrentLayerName();
             db.SetCurrentLayer("BF-铝材");
@@ -742,7 +742,7 @@ namespace BF_CustomTools
             Point2d pt1, pt2, pt3;
             Point3d insPt1, insPt2;
             Point2d xPt1, xPt2, xPt3;
-            ed.WriteMessage("\n百福工具箱——绘制柜桶储物门立面");
+            ed.WriteMessage("\n[百福工具箱]——绘制柜桶储物门立面");
 
             string curLayerName = db.GetCurrentLayerName();
             //db.SetCurrentLayer("BF-产品线");
@@ -1279,7 +1279,7 @@ namespace BF_CustomTools
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
-            ed.WriteMessage("百福工具箱——快速绘制卡布灯箱顶剖图");
+            ed.WriteMessage("[百福工具箱]——快速绘制卡布灯箱顶剖图");
             string curLayerName = db.GetCurrentLayerName();
             Point3d pt1, pt2;
             PromptPointOptions ppo = new PromptPointOptions("\n请选择起始点");
@@ -1363,7 +1363,7 @@ namespace BF_CustomTools
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
-            ed.WriteMessage("百福工具箱——快速绘制矩形卡布灯箱顶剖图");
+            ed.WriteMessage("[百福工具箱]——快速绘制矩形卡布灯箱顶剖图");
             string curLayerName = db.GetCurrentLayerName();
             Point3d pt1, pt2;
             PromptPointOptions ppo = new PromptPointOptions("\n请选择起始点");
@@ -1446,7 +1446,7 @@ namespace BF_CustomTools
         {
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("\n百福工具箱——绘制橱窗移门侧剖");
+            ed.WriteMessage("\n[百福工具箱]——绘制橱窗移门侧剖");
             Point3d spt, ept;
             string layerNameOld = db.GetCurrentLayerName();
             PromptPointOptions ppo = new PromptPointOptions("\n给定移门下起点");
@@ -1544,7 +1544,7 @@ namespace BF_CustomTools
         {
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("\n百福工具箱——绘制橱窗移门侧剖");
+            ed.WriteMessage("\n[百福工具箱]——绘制橱窗移门侧剖");
             Point3d spt, ept;
             string layerNameOld = db.GetCurrentLayerName();
             PromptPointOptions ppo = new PromptPointOptions("\n给定起始点");
@@ -1624,7 +1624,7 @@ namespace BF_CustomTools
         {
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("\n百福工具箱——绘制橱窗移门侧剖");
+            ed.WriteMessage("\n[百福工具箱]——绘制橱窗移门侧剖");
             Point3d spt, ept;
             string layerNameOld = db.GetCurrentLayerName();
             PromptPointOptions ppo = new PromptPointOptions("\n给定起始点");
@@ -1738,7 +1738,7 @@ namespace BF_CustomTools
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Editor ed = doc.Editor;
-            ed.WriteMessage("\n百福工具箱——绘制柜台翻门");
+            ed.WriteMessage("\n[百福工具箱]——绘制柜台翻门");
             Point3d pt1,pt2,spt, ept;
             double mdw, fmw, fmh;
 
@@ -1782,7 +1782,7 @@ namespace BF_CustomTools
             Database db = doc.Database;
             String blkname = "铝腿01";
 
-            ed.WriteMessage("\n百福工具箱——插入柜腿");
+            ed.WriteMessage("\n[百福工具箱]——插入柜腿");
 
             //输入插入块的类型
             PromptKeywordOptions pKeyOpts = new PromptKeywordOptions("")

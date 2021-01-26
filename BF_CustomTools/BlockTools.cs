@@ -32,7 +32,7 @@ namespace BF_CustomTools
         };
         public static TypedValue[] values;
         //用在DraftingTools中
-        public static Document doc; 
+        public static Document doc;
         public static string curLayerName;
         public static double thickness;
     }
@@ -44,7 +44,7 @@ namespace BF_CustomTools
         {
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("\n百福工具箱——快速建块");
+            ed.WriteMessage("\n[百福工具箱]——快速建块");
 
             DateTime dt = DateTime.Now;
             string strTime = dt.ToString("yyyyMMddHHmmss");
@@ -112,7 +112,7 @@ namespace BF_CustomTools
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
-            ed.WriteMessage("\n百福工具箱——修改图块基点，现有同名块位置不变");
+            ed.WriteMessage("\n[百福工具箱]——修改图块基点，现有同名块位置不变");
 
             Point3d basePoint;
             PromptEntityOptions peo = new PromptEntityOptions("\n请选择要修改的图块");
@@ -162,7 +162,7 @@ namespace BF_CustomTools
             string strTime = dt.ToString("yyyyMMddHHmmss");
             PublicValue.newBlockName = "BF" + strTime;
 
-            ed.WriteMessage("\n百福工具箱——修改块名");
+            ed.WriteMessage("\n[百福工具箱]——修改块名");
 
             PromptEntityOptions peo = new PromptEntityOptions("\n请选择图块");
             peo.SetRejectMessage("\n选择的必须是块!");
@@ -194,7 +194,7 @@ namespace BF_CustomTools
             Database db = HostApplicationServices.WorkingDatabase;
 
             Editor ed = doc.Editor;
-            ed.WriteMessage("\n百福工具箱——插入图框");
+            ed.WriteMessage("\n[百福工具箱]——插入图框");
             string blkname = "BFA3H";
             //输入插入块的类型
             PromptKeywordOptions pKeyOpts = new PromptKeywordOptions("")
@@ -265,7 +265,7 @@ namespace BF_CustomTools
             string xckPath = Tools.GetCurrentPath() + @"\BaseDwgs\铝型材标准块库.dwg";
             ed.WriteMessage(xckPath);
             //根据编号生成需要的块名
-            PromptStringOptions pso = new PromptStringOptions("\n百福工具箱——插入铝型材\n请输入型材编号")
+            PromptStringOptions pso = new PromptStringOptions("\n[百福工具箱]——插入铝型材\n请输入型材编号")
             {
                 AllowSpaces = false
             };
@@ -314,7 +314,7 @@ namespace BF_CustomTools
             string xckPath = Tools.GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
             string blkname = "LED灯条";
 
-            ed.WriteMessage("\n百福工具箱——插入灯具图块");
+            ed.WriteMessage("\n[百福工具箱]——插入灯具图块");
             //选择插入灯具的样式
             PromptPointOptions ppo = new PromptPointOptions("选择需要插入的灯具图块");
             ppo.Keywords.Add("Led灯条截面");
@@ -389,7 +389,7 @@ namespace BF_CustomTools
             string xckPath = Tools.GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
             string blkname = "天花灯";
 
-            ed.WriteMessage("\n百福工具箱——快速布置天花灯具");
+            ed.WriteMessage("\n[百福工具箱]——快速布置天花灯具");
 
             //输入天花灯具的起始点和终止点
             PromptPointResult ppr1 = ed.GetPoint("\n请选择起始点");
@@ -460,7 +460,7 @@ namespace BF_CustomTools
             string xckPath = Tools.GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
             string blkname = "LED筒灯";
 
-            ed.WriteMessage("\n百福工具箱——快速通道照明灯具");
+            ed.WriteMessage("\n[百福工具箱]——快速通道照明灯具");
 
             //输入天花灯具的起始点和终止点
             PromptPointResult ppr1 = ed.GetPoint("\n请选择起始点");
@@ -567,7 +567,7 @@ namespace BF_CustomTools
         {
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("\n百福工具箱——插入组合标题索引");
+            ed.WriteMessage("\n[百福工具箱]——插入组合标题索引");
             PromptPointOptions ppo = new PromptPointOptions("\n给定索引组合的插入点");
             PromptPointResult ppr = ed.GetPoint(ppo);
             if (ppr.Status == PromptStatus.OK)
@@ -605,7 +605,7 @@ namespace BF_CustomTools
             Database db = doc.Database;
             Editor ed = doc.Editor;
             double angle = 0;
-            ed.WriteMessage("\n百福工具箱——插入索引符号");
+            ed.WriteMessage("\n[百福工具箱]——插入索引符号");
             //开启正交
             if (!db.Orthomode)
             {
@@ -661,7 +661,7 @@ namespace BF_CustomTools
         {
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("\n百福工具箱——均布螺丝孔");
+            ed.WriteMessage("\n[百福工具箱]——均布螺丝孔");
 
             string blkPath = Tools.GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
             string blkname = "DK5";
@@ -712,7 +712,7 @@ namespace BF_CustomTools
         {
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("\n百福工具箱——均布双螺丝孔");
+            ed.WriteMessage("\n[百福工具箱]——均布双螺丝孔");
 
             string blkPath = Tools.GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
             string blkname = "SK5_10";

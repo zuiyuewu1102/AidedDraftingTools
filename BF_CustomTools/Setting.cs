@@ -24,7 +24,7 @@ namespace BF_CustomTools
         public void PSet()
         {            
             Editor ed = acDoc.Editor;
-            ed.WriteMessage("百福工具箱——基本设置");
+            ed.WriteMessage("[百福工具箱]——基本设置");
             AcadPreferences acPre = (AcadPreferences)Application.Preferences;
             //设置十字光标大小
             acPre.Display.CursorSize = 50;
@@ -55,7 +55,7 @@ namespace BF_CustomTools
         public void SD()
         {
             Editor ed = acDoc.Editor;
-            ed.WriteMessage("百福工具箱——设定图纸比例和缩放各标注");
+            ed.WriteMessage("[百福工具箱]——设定图纸比例和缩放各标注");
 
             //int dimScale = System.Convert.ToInt32(Application.GetSystemVariable("DIMSCALE"));
             //String dimStyle = System.Convert.ToString(Application.GetSystemVariable("DIMSTYLE"));

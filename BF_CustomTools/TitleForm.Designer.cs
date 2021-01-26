@@ -308,7 +308,7 @@
             this.MinimizeBox = false;
             this.Name = "TitleForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "[百福工具箱]——插入标题";
+            this.Text = "[[百福工具箱]]——插入标题";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();

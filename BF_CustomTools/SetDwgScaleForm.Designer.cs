@@ -188,7 +188,7 @@
             this.Controls.Add(this.listBoxGlobalScale);
             this.Name = "SetDwgScaleForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "[百福工具箱]—设置图纸比例";
+            this.Text = "[[百福工具箱]]—设置图纸比例";
             this.ResumeLayout(false);
             this.PerformLayout();
 

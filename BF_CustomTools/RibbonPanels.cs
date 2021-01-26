@@ -19,7 +19,7 @@ namespace BF_CustomTools
         public void Btn()
         {
             RibbonControl ribbonControl = ComponentManager.Ribbon;//获取CAD的Ribbon界面
-            RibbonTab ribbonTab = ribbonControl.AddTab("百福工具箱", "Acad.MyRibbonId1", true);//给Ribbon界面添加一个选项卡
+            RibbonTab ribbonTab = ribbonControl.AddTab("[百福工具箱]", "Acad.MyRibbonId1", true);//给Ribbon界面添加一个选项卡
             ribbonTab.Panels.Add(ribbonControl.Tabs[0].FindPanel("ID_PanelLayers"));
             ribbonTab.Panels.Add(ribbonControl.Tabs[2].FindPanel("ID_PanelDimensions"));
             //RibbonPanelSource ribbonPanelSource0 = ribbonControl.Tabs[2].FindPanel("ID_PanelDimensions").Source;

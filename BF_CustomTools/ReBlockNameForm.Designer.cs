@@ -105,7 +105,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "ReBlockNameForm";
-            this.Text = "百福工具箱——修改块名";
+            this.Text = "[百福工具箱]——修改块名";
             this.ResumeLayout(false);
             this.PerformLayout();
 

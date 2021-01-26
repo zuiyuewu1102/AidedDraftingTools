@@ -20,7 +20,7 @@ namespace BF_CustomTools
         {
             Database db = HostApplicationServices.WorkingDatabase;
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("\n百福工具箱——修改图块比例大小");
+            ed.WriteMessage("\n[百福工具箱]——修改图块比例大小");
             //创建选择集
             PromptSelectionOptions pso = new PromptSelectionOptions
             {
@@ -76,7 +76,7 @@ namespace BF_CustomTools
             Editor ed = doc.Editor;
             
             string layerName = db.GetCurrentLayerName();
-            ed.WriteMessage("\n百福工具箱——连接两根多段线的顶点");
+            ed.WriteMessage("\n[百福工具箱]——连接两根多段线的顶点");
 
             PromptEntityOptions peo1 = new PromptEntityOptions("\n请选择第一根多端线");
             peo1.SetRejectMessage("\n选择的多段线!");

@@ -86,7 +86,7 @@ namespace BF_CustomTools
 
                 Text = " DimScale (1:" + dimScale.ToString() + " ) DimStyle:( " + dimStyle + " ) ",
 
-                ToolTipText = "百福工具箱你值得拥有"
+                ToolTipText = "[百福工具箱]你值得拥有"
             };
 
             //Application.StatusBar.Update();

@@ -152,6 +152,12 @@
       <DependentUpon>ReBlockNameForm.cs</DependentUpon>
     </Compile>
     <Compile Include="RibbonButtonInfos.cs" />
+    <Compile Include="SelectHoleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectHoleForm.Designer.cs">
+      <DependentUpon>SelectHoleForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SetDwgScaleForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -209,6 +215,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ReBlockNameForm.resx">
       <DependentUpon>ReBlockNameForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectHoleForm.resx">
+      <DependentUpon>SelectHoleForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SetDwgScaleForm.resx">
       <DependentUpon>SetDwgScaleForm.cs</DependentUpon>
@@ -466,6 +475,9 @@
     <Content Include="bin\Debug\x64\SQLite.Interop.dll" />
     <Content Include="bin\Debug\x86\SQLite.Interop.dll" />
     <Content Include="Resources\blockManage.png" />
+    <None Include="Resources\H510X.png" />
+    <None Include="Resources\H510S.png" />
+    <None Include="Resources\H5.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Debug\BaseDwgs\.blocksMetadata\" />

@@ -21,7 +21,7 @@ namespace BF_CustomTools
         public void DIC()
         {
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("\n百福工具箱——用户词库管理");
+            ed.WriteMessage("\n[百福工具箱]——用户词库管理");
             //加载显示窗体
             //FormDIC form = new FormDIC();
             //Application.ShowModalDialog(form);
@@ -34,7 +34,7 @@ namespace BF_CustomTools
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
-            ed.WriteMessage("\n百福工具箱——求和");
+            ed.WriteMessage("\n[百福工具箱]——求和");
             double val;
             double zongVal = 0;
             using (Transaction trans = db.TransactionManager.StartTransaction())
@@ -78,7 +78,7 @@ namespace BF_CustomTools
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
-            ed.WriteMessage("\n百福工具箱——递增文本");
+            ed.WriteMessage("\n[百福工具箱]——递增文本");
             //输入增量值
             //PromptIntegerOptions pio = new PromptIntegerOptions("\n请输入增量值<1>")
             //{

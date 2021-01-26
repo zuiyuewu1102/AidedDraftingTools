@@ -25,7 +25,7 @@ namespace BF_CustomTools
             bool isPlot;
             LineWeight lineWeight;
 
-            ed.WriteMessage("\n百福工具箱——设置绘图环境(图层)");
+            ed.WriteMessage("\n[百福工具箱]——设置绘图环境(图层)");
 
             string filePath = Tools.GetCurrentPath() + "\\SetFiles\\Layers.txt";
             StreamReader sr = new StreamReader(filePath, Encoding.Default);
@@ -75,7 +75,7 @@ namespace BF_CustomTools
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor acEd = doc.Editor;
-            acEd.WriteMessage("\n百福工具箱——自动归层");
+            acEd.WriteMessage("\n[百福工具箱]——自动归层");
             //确定是否有标注、文字、填充3个图层，没有则添加
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
