@@ -34,6 +34,7 @@ namespace BF_CustomTools
         //用在DraftingTools中
         public static Document doc;
         public static string curLayerName;
+        public static string layerName;
         public static double thickness;
     }
     public class BlockTools

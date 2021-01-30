@@ -1,4 +1,9 @@
-﻿using System;
+﻿using App = Autodesk.AutoCAD.ApplicationServices.Application;
+using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.EditorInput;
+using Autodesk.AutoCAD.Geometry;
+using CommonClassLibrary;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,40 +13,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Geometry;
-using CommonClassLibrary;
-using Application = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace BF_CustomTools
 {
-    public partial class SetWoodPlateThickness : Form
+    public partial class SetBasePlateThickness : Form
     {
-        public SetWoodPlateThickness()
+        public SetBasePlateThickness()
         {
             InitializeComponent();
             TxtCurThickness.Text = ConData();
         }
-        public string ConData()
+
+        private string ConData()
         {
             string dataPath = "DataSource=" + Tools.GetCurrentPath() + "\\BaseData.db";
             SQLiteConnection con = new SQLiteConnection(dataPath);
             SQLiteCommand cmd = new SQLiteCommand();
             cmd.Connection = con;
-            cmd.CommandText = "select Thickness from MaterialTable Where Name = 'WoodPlate'";
+            cmd.CommandText = "select Thickness from MaterialTable Where Name = 'BasePlate'";
             con.Open();
             string t = cmd.ExecuteScalar().ToString();
             con.Close();
             return t;
         }
-
         private void ChangDataValue(string t)
         {
             string dataPath = "DataSource=" + Tools.GetCurrentPath() + "\\BaseData.db";
             SQLiteConnection con = new SQLiteConnection(dataPath);
-            string myUpdata = "update MaterialTable set Thickness  = '" + t + "'  Where Name = 'WoodPlate'";
+            string myUpdata = "update MaterialTable set Thickness  = '" + t + "'  Where Name = 'BasePlate'";
             SQLiteCommand cmd = new SQLiteCommand(myUpdata, con);
             try
             {
@@ -54,32 +53,57 @@ namespace BF_CustomTools
                 MessageBox.Show(ex.Message);
             }
         }
+
         private void BtnOK_Click(object sender, EventArgs e)
         {
             Database db = HostApplicationServices.WorkingDatabase;
-            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            PublicValue.thickness = Convert.ToDouble(TxtCurThickness.Text);            
+            Editor ed = App.DocumentManager.MdiActiveDocument.Editor;
+            PublicValue.thickness = Convert.ToDouble(TxtCurThickness.Text);
             this.Hide();
             //修改数据库中的值
-            ChangDataValue(TxtCurThickness.Text); 
-            PromptPointOptions optPoint = new PromptPointOptions("\n请拾取夹层板起点坐标");            
+            ChangDataValue(TxtCurThickness.Text);
+
+            string tishitxt = "\n当前基板厚度为" + PublicValue.thickness.ToString() + "\n请拾取起点坐标";
+            PromptPointOptions optPoint = new PromptPointOptions(tishitxt);
+            //optPoint.Keywords.Add("S");
             PromptPointResult resPoint = ed.GetPoint(optPoint);
             if (resPoint.Status != PromptStatus.OK) return;
             Point3d spt = resPoint.Value;
-            PromptPointOptions ppo = new PromptPointOptions("\n请拾取夹层板终点坐标");
-            ppo.UseBasePoint = true;
-            ppo.BasePoint = spt;
-            PromptPointResult ppr = ed.GetPoint(ppo);
-            if (ppr.Status != PromptStatus.OK) return;
-            Point3d ept = ppr.Value;
-            JiaCengBanJig mGBJig = new JiaCengBanJig(spt, ept, PublicValue.thickness);
-            PromptResult resJig = ed.Drag(mGBJig);
-            if (resJig.Status == PromptStatus.OK)
+            PromptPointOptions ppo2 = new PromptPointOptions("\n给定终止点")
             {
-                Tools.AddToModelSpace(db, mGBJig.GetEntity());
+                BasePoint = spt,
+                UseBasePoint = true
+            };
+            PromptPointResult ppr2 = ed.GetPoint(ppo2);
+            if (ppr2.Status == PromptStatus.OK)
+            {
+                Point3d ept = ppr2.Value;
+                //初始化图形
+                Polyline polyline1 = new Polyline();
+                for (int i = 0; i < 4; i++)
+                {
+                    polyline1.AddVertexAt(i, Point2d.Origin, 0.0, 0.0, 0.0);
+                }
+                polyline1.Closed = true;
+                polyline1.Layer = "BF-产品线";
+
+                Polyline polyline2 = new Polyline();
+                for (int i = 0; i < 8; i++)
+                {
+                    polyline2.AddVertexAt(i, Point2d.Origin, 0.0, 0.0, 0.0);
+                }
+                polyline2.Layer = PublicValue.layerName;
+                //拖拽
+                PiGeBanJig pigebanJig = new PiGeBanJig(spt, ept, PublicValue.thickness, polyline1, polyline2);
+                PromptResult resJig = ed.Drag(pigebanJig);
+                if (resJig.Status == PromptStatus.OK)
+                {
+                    Tools.AddToModelSpace(db, polyline1);
+                    Tools.AddToModelSpace(db, polyline2);
+                }
             }
-            db.SetCurrentLayer(PublicValue.curLayerName);
             this.Close();
+            return;
         }
 
         private void Btn3_Click(object sender, EventArgs e)
@@ -116,18 +140,6 @@ namespace BF_CustomTools
         {
             PublicValue.thickness = 18.0;
             this.TxtCurThickness.Text = "18.0";
-        }
-
-        private void Btn20_Click(object sender, EventArgs e)
-        {
-            PublicValue.thickness = 20.0;
-            this.TxtCurThickness.Text = "20.0";
-        }
-
-        private void Btn25_Click(object sender, EventArgs e)
-        {
-            PublicValue.thickness = 25.0;
-            this.TxtCurThickness.Text = "25.0";
         }
     }
 }

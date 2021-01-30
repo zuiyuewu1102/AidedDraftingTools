@@ -29,7 +29,7 @@ namespace BF_CustomTools
             SQLiteConnection con = new SQLiteConnection(dataPath);
             SQLiteCommand cmd = new SQLiteCommand();
             cmd.Connection = con;
-            cmd.CommandText = "select Thickness from MaterialThickness Where MaterialName = 'Glass'";
+            cmd.CommandText = "select Thickness from MaterialTable Where Name = 'Glass'";
             con.Open();
             string t = cmd.ExecuteScalar().ToString();
             con.Close();
@@ -39,7 +39,7 @@ namespace BF_CustomTools
         {
             string dataPath = "DataSource=" + Tools.GetCurrentPath() + "\\BaseData.db";
             SQLiteConnection con = new SQLiteConnection(dataPath);
-            string myUpdata = "update MaterialThickness set Thickness  = '" + t + "'  Where MaterialName = 'Glass'";
+            string myUpdata = "update MaterialTable set Thickness  = '" + t + "'  Where Name = 'Glass'";
             SQLiteCommand cmd = new SQLiteCommand(myUpdata, con);
             try
             {
