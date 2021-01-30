@@ -136,7 +136,7 @@ namespace BF_CustomTools
             SQLiteCommand cmd = new SQLiteCommand
             {
                 Connection = con,
-                CommandText = "select Thickness from MaterialThickness Where MaterialName = 'WoodPlate'"
+                CommandText = "select Thickness from MaterialTable Where Name = 'WoodPlate'"
             };
             con.Open();
             PublicValue.thickness = Convert.ToDouble(cmd.ExecuteScalar().ToString());
@@ -186,7 +186,7 @@ namespace BF_CustomTools
             SQLiteCommand cmd = new SQLiteCommand
             {
                 Connection = con,
-                CommandText = "select Thickness from MaterialThickness Where MaterialName = 'Glass'"
+                CommandText = "select Thickness from MaterialTable Where Name = 'Glass'"
             };
             con.Open();
             PublicValue.thickness = Convert.ToDouble(cmd.ExecuteScalar().ToString());
@@ -265,115 +265,78 @@ namespace BF_CustomTools
 
         //绘制皮革板截面
         [CommandMethod("PGB")]
+        //[CommandMethod("QBB")]
         public void PGB()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
-            Point3d spt;
-            Point3d ept;
-            List<Point2d> pl1 = new List<Point2d>();
-            List<Point2d> pl2 = new List<Point2d>();
-            Double t = 9;
-            double ang;
-            //double dis;
-            PromptPointOptions ppo1 = new PromptPointOptions("\n百福绘图工具——绘制皮革板剖面")
+            //string curLayerName = db.GetCurrentLayerName();
+            ed.WriteMessage("\n[百福工具箱]——绘制皮革板截面");
+            //db.SetCurrentLayer("BF-皮革板");
+            //读取数据库中的夹层板厚度数据
+            string dataPath = "DataSource=" + Tools.GetCurrentPath() + "\\BaseData.db";
+            SQLiteConnection con = new SQLiteConnection(dataPath);
+            SQLiteCommand cmd = new SQLiteCommand
             {
-                Message = "\n给定起始点"
+                Connection = con,
+                CommandText = "select Thickness from MaterialTable Where Name = 'LeatherPlate'"
             };
-            PromptPointResult ppr1 = ed.GetPoint(ppo1);
-            if (ppr1.Status == PromptStatus.OK)
+            con.Open();
+            PublicValue.thickness = Convert.ToDouble(cmd.ExecuteScalar().ToString());
+            con.Close();
+            string tishitxt = "\n当前皮革板厚度为" + PublicValue.thickness.ToString() + "\n请拾取皮革板起点坐标或[设置厚度(S)]";
+            PromptPointOptions optPoint = new PromptPointOptions(tishitxt);
+            optPoint.Keywords.Add("S");
+            PromptPointResult resPoint = ed.GetPoint(optPoint);
+            if (resPoint.Status == PromptStatus.Keyword)
             {
-                spt = ppr1.Value;
+                //SetWoodPlateThickness swpt = new SetWoodPlateThickness();
+                //swpt.Text = "设置皮革板的基板厚度";
+                //swpt.ShowDialog();
+                //return;
+            }
+            else if (resPoint.Status != PromptStatus.OK) return;
+                Point3d spt = resPoint.Value;
                 PromptPointOptions ppo2 = new PromptPointOptions("\n给定终止点")
                 {
                     BasePoint = spt,
                     UseBasePoint = true
                 };
                 PromptPointResult ppr2 = ed.GetPoint(ppo2);
-                if (ppr2.Status == PromptStatus.OK)
-                {
-                    ept = ppr2.Value;
-                    Vector2d vec = new Point2d(ept.X, ept.Y) - new Point2d(spt.X, spt.Y);
-                    ang = vec.Angle;
-
-                    PromptDoubleOptions pdo = new PromptDoubleOptions("\n给定板厚t=<9>")
-                    {
-                        AllowNone = true
-                    };
-                    PromptDoubleResult pdr = ed.GetDouble(pdo);
-                    if (pdr.Status == PromptStatus.OK)
-                    {
-                        t = pdr.Value;
-                    }
-                    else if (pdr.Status == PromptStatus.None) t = 9;
-
-                    //计算相关点坐标
-                    Point2d p2 = new Point2d(spt.X + 20 * Math.Cos(ang), spt.Y + 20 * Math.Sin(ang));
-                    Point2d p1 = new Point2d(p2.X + 1 * Math.Cos(ang + Math.PI / 2), p2.Y + 1 * Math.Sin(ang + Math.PI / 2));
-                    Point2d p3 = new Point2d(spt.X, spt.Y);
-                    Point2d p4 = new Point2d(spt.X + (t + 2) * Math.Cos(ang + Math.PI / 2), spt.Y + (t + 2) * Math.Sin(ang + Math.PI / 2));
-                    Point2d p5 = new Point2d(ept.X + (t + 2) * Math.Cos(ang + Math.PI / 2), ept.Y + (t + 2) * Math.Sin(ang + Math.PI / 2));
-                    Point2d p6 = new Point2d(ept.X, ept.Y);
-                    Point2d p7 = new Point2d(ept.X - 20 * Math.Cos(ang), ept.Y - 20 * Math.Sin(ang));
-                    Point2d p8 = new Point2d(p7.X + 1 * Math.Cos(ang + Math.PI / 2), p7.Y + 1 * Math.Sin(ang + Math.PI / 2));
-                    pl1.Add(p1);
-                    pl1.Add(p2);
-                    pl1.Add(p3);
-                    pl1.Add(p4);
-                    pl1.Add(p5);
-                    pl1.Add(p6);
-                    pl1.Add(p7);
-                    pl1.Add(p8);
-                    Point2d pt1 = new Point2d(p1.X - 19 * Math.Cos(ang), p1.Y - 19 * Math.Sin(ang));
-                    Point2d pt2 = new Point2d(pt1.X + t * Math.Cos(ang + Math.PI / 2), pt1.Y + t * Math.Sin(ang + Math.PI / 2));
-                    Point2d pt4 = new Point2d(p8.X + 19 * Math.Cos(ang), p8.Y + 19 * Math.Sin(ang));
-                    Point2d pt3 = new Point2d(pt4.X + t * Math.Cos(ang + Math.PI / 2), pt4.Y + t * Math.Sin(ang + Math.PI / 2));
-                    pl2.Add(pt1);
-                    pl2.Add(pt2);
-                    pl2.Add(pt3);
-                    pl2.Add(pt4);
-                }
-            }
-
-            using (Transaction trans = db.TransactionManager.StartTransaction())
+            if (ppr2.Status == PromptStatus.OK)
             {
-                LayerTable lt = (LayerTable)trans.GetObject(db.LayerTableId, OpenMode.ForRead);
-                if (!lt.Has("BF-皮革")) db.AddLayer("BF-皮革", 2);
-                db.Clayer = lt["BF-皮革"];
-
-                BlockTable bt = (BlockTable)trans.GetObject(db.BlockTableId, OpenMode.ForRead);
-                BlockTableRecord btr1 = (BlockTableRecord)trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
-
+                Point3d ept = ppr2.Value;
+                //初始化图形
                 Polyline polyline1 = new Polyline();
-                for (int i = 0; i < pl1.Count; i++)
+                for (int i = 0; i < 4; i++)
                 {
-                    polyline1.AddVertexAt(i, pl1[i], 0, 0, 0);
+                    polyline1.AddVertexAt(i, Point2d.Origin, 0.0, 0.0, 0.0);
                 }
-                btr1.AppendEntity(polyline1);
-                trans.AddNewlyCreatedDBObject(polyline1, true);
-                btr1.DowngradeOpen();
+                polyline1.Closed = true;
+                polyline1.Layer = "BF-产品线";
 
-                if (!lt.Has("BF-产品线")) db.AddLayer("BF-产品线", 146);
-                db.Clayer = lt["BF-产品线"];
-
-                BlockTableRecord btr2 = (BlockTableRecord)trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
                 Polyline polyline2 = new Polyline();
-                for (int i = 0; i < pl2.Count; i++)
+                for (int i = 0; i < 8; i++)
                 {
-                    polyline2.AddVertexAt(i, pl2[i], 0, 0, 0);
+                    polyline2.AddVertexAt(i, Point2d.Origin, 0.0, 0.0, 0.0);
                 }
-                polyline2.Closed = true;
-                btr2.AppendEntity(polyline2);
-                trans.AddNewlyCreatedDBObject(polyline2, true);
-                btr2.DowngradeOpen();
+                polyline2.Layer = "BF-皮革";
+                //拖拽
+                PiGeBanJig pigebanJig = new PiGeBanJig(spt, ept, PublicValue.thickness, polyline1, polyline2);
+                PromptResult resJig = ed.Drag(pigebanJig);
+                if (resJig.Status == PromptStatus.OK)
+                {
+                    Tools.AddToModelSpace(db, polyline1);
+                    Tools.AddToModelSpace(db, polyline2);
+                }
 
-                trans.Commit();
+                //db.SetCurrentLayer(curLayerName);
             }
         }
 
         //绘制墙布板截面
-        [CommandMethod("QBB")]
+        //[CommandMethod("QBB")]
         public void QBB()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;

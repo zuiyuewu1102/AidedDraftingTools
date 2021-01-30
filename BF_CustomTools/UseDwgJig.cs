@@ -103,7 +103,6 @@ namespace BF_CustomTools
             ((Polyline)Entity).Closed = true;
             return true;
         }
-
         public Entity GetEntity()
         {
             return Entity;
@@ -208,7 +207,6 @@ namespace BF_CustomTools
             else
                 return SamplerStatus.NoChange;
         }
-
         protected override bool Update()
         {
             ((Polyline)Entity).SetPointAt(0, m_pts[0]);
@@ -224,7 +222,6 @@ namespace BF_CustomTools
             ((Polyline)Entity).Closed = true;
             return true;
         }
-
         public Entity GetEntity()
         {
             return Entity;
@@ -303,7 +300,6 @@ namespace BF_CustomTools
             else
                 return SamplerStatus.NoChange;
         }
-
         protected override bool Update()
         {
             ((Polyline)Entity).SetPointAt(0, m_pts[0]);
@@ -320,7 +316,139 @@ namespace BF_CustomTools
         public Entity GetEntity()
         {
             return Entity;
+        }        
+    }
+
+    public class PiGeBanJig : DrawJig
+    {
+        public Polyline m_pl1, m_pl2;
+        private Point3d m_peakPt;
+        private double m_t;
+        public Point3d m_spt, m_ept;
+        public Point2d[] pts1 = new Point2d[4];
+        public Point2d[] pts2 = new Point2d[8];
+
+        public PiGeBanJig(Point3d spt,Point3d ept,double t,Polyline pl1,Polyline pl2)
+        {
+            m_spt = spt;
+            m_ept = ept;
+            m_t = t;
+            m_pl1 = pl1;
+            m_pl2 = pl2;
         }
-        double m_gap;
+        protected override SamplerStatus Sampler(JigPrompts prompts)
+        {
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            //Matrix3d mt = ed.CurrentUserCoordinateSystem;
+            JigPromptPointOptions jppo = new JigPromptPointOptions("\n移动鼠标确定翻转方向")
+            {
+                //光标类型
+                Cursor = CursorType.Crosshair,
+                //拖拽限制
+                UserInputControls = UserInputControls.Accept3dCoordinates
+                | UserInputControls.NoZeroResponseAccepted
+                | UserInputControls.NoNegativeResponseAccepted,
+                //拖拽基点必须是WCS点
+                BasePoint = new Point3d(m_ept.X, m_ept.Y, 0),
+                UseBasePoint = true
+            };
+            PromptPointResult ppr = prompts.AcquirePoint(jppo);
+            Point3d tempPt = ppr.Value;
+            //拖拽取消
+            if (ppr.Status == PromptStatus.Cancel) return SamplerStatus.Cancel;
+            if(m_peakPt != tempPt)
+            {
+                m_peakPt = tempPt;
+                //将WCS点转化未UCS点
+                //m_peakPt = m_peakPt.TransformBy(mt.Inverse());
+                Vector2d vec1 = new Point2d(m_ept.X,m_ept.Y) - new Point2d(m_spt.X,m_spt.Y);
+                Vector2d vec2 = new Point2d(m_peakPt.X, m_peakPt.Y) - new Point2d(m_spt.X, m_spt.Y);
+                pts2[2] = new Point2d(m_spt.X, m_spt.Y);
+                pts2[1] = LinshiFangfa.PolarPoint(pts2[2], vec1.Angle, 20.0);
+                pts2[5] = new Point2d(m_ept.X, m_ept.Y);
+                pts2[6] = LinshiFangfa.PolarPoint(pts2[5], vec1.Angle, -20.0);
+
+                if (vec1.Angle > Math.PI)
+                {
+                    if (vec2.Angle >= vec1.Angle || vec2.Angle <= vec1.Angle - Math.PI)
+                    {
+                        pts1[0] = LinshiFangfa.PolarPoint(new Point2d(m_spt.X, m_spt.Y), vec1.Angle + Math.PI / 4, Math.Sqrt(2));
+                        pts1[1] = LinshiFangfa.PolarPoint(pts1[0], vec1.Angle, vec1.Length - 2);
+                        pts1[2] = LinshiFangfa.PolarPoint(pts1[1], vec1.Angle + Math.PI / 2, m_t);
+                        pts1[3] = LinshiFangfa.PolarPoint(pts1[0], vec1.Angle + Math.PI / 2, m_t);
+
+                        pts2[0] = LinshiFangfa.PolarPoint(pts2[1], vec1.Angle + Math.PI / 2, 1.0);
+                        pts2[3] = LinshiFangfa.PolarPoint(pts2[2], vec1.Angle + Math.PI / 2, m_t + 2.0);
+                        pts2[4] = LinshiFangfa.PolarPoint(pts2[5], vec1.Angle + Math.PI / 2, m_t + 2.0);
+                        pts2[7] = LinshiFangfa.PolarPoint(pts2[6], vec1.Angle + Math.PI / 2, 1.0);
+                    }
+                    else
+                    {
+                        pts1[0] = LinshiFangfa.PolarPoint(new Point2d(m_spt.X, m_spt.Y), vec1.Angle - Math.PI / 4, Math.Sqrt(2));
+                        pts1[1] = LinshiFangfa.PolarPoint(pts1[0], vec1.Angle, vec1.Length - 2);
+                        pts1[2] = LinshiFangfa.PolarPoint(pts1[1], vec1.Angle - Math.PI / 2, m_t);
+                        pts1[3] = LinshiFangfa.PolarPoint(pts1[0], vec1.Angle - Math.PI / 2, m_t);
+
+                        pts2[0] = LinshiFangfa.PolarPoint(pts2[1], vec1.Angle - Math.PI / 2, 1.0);
+                        pts2[3] = LinshiFangfa.PolarPoint(pts2[2], vec1.Angle - Math.PI / 2, m_t + 2.0);
+                        pts2[4] = LinshiFangfa.PolarPoint(pts2[5], vec1.Angle - Math.PI / 2, m_t + 2.0);
+                        pts2[7] = LinshiFangfa.PolarPoint(pts2[6], vec1.Angle - Math.PI / 2, 1.0);
+                    }
+                }
+                else
+                {
+                    if (vec2.Angle >= vec1.Angle && vec2.Angle <= vec1.Angle + Math.PI)
+                    {
+                        pts1[0] = LinshiFangfa.PolarPoint(new Point2d(m_spt.X, m_spt.Y), vec1.Angle + Math.PI / 4, Math.Sqrt(2));
+                        pts1[1] = LinshiFangfa.PolarPoint(pts1[0], vec1.Angle, vec1.Length - 2);
+                        pts1[2] = LinshiFangfa.PolarPoint(pts1[1], vec1.Angle + Math.PI / 2, m_t);
+                        pts1[3] = LinshiFangfa.PolarPoint(pts1[0], vec1.Angle + Math.PI / 2, m_t);
+
+                        pts2[0] = LinshiFangfa.PolarPoint(pts2[1], vec1.Angle + Math.PI / 2, 1.0);
+                        pts2[3] = LinshiFangfa.PolarPoint(pts2[2], vec1.Angle + Math.PI / 2, m_t + 2.0);
+                        pts2[4] = LinshiFangfa.PolarPoint(pts2[5], vec1.Angle + Math.PI / 2, m_t + 2.0);
+                        pts2[7] = LinshiFangfa.PolarPoint(pts2[6], vec1.Angle + Math.PI / 2, 1.0);
+                    }
+                    else
+                    {
+                        pts1[0] = LinshiFangfa.PolarPoint(new Point2d(m_spt.X, m_spt.Y), vec1.Angle - Math.PI / 4, Math.Sqrt(2));
+                        pts1[1] = LinshiFangfa.PolarPoint(pts1[0], vec1.Angle, vec1.Length - 2);
+                        pts1[2] = LinshiFangfa.PolarPoint(pts1[1], vec1.Angle - Math.PI / 2, m_t);
+                        pts1[3] = LinshiFangfa.PolarPoint(pts1[0], vec1.Angle - Math.PI / 2, m_t);
+
+                        pts2[0] = LinshiFangfa.PolarPoint(pts2[1], vec1.Angle - Math.PI / 2, 1.0);
+                        pts2[3] = LinshiFangfa.PolarPoint(pts2[2], vec1.Angle - Math.PI / 2, m_t + 2.0);
+                        pts2[4] = LinshiFangfa.PolarPoint(pts2[5], vec1.Angle - Math.PI / 2, m_t + 2.0);
+                        pts2[7] = LinshiFangfa.PolarPoint(pts2[6], vec1.Angle - Math.PI / 2, 1.0);
+                    }
+                }
+                m_pl1.Normal = Vector3d.ZAxis;
+                m_pl1.Elevation = 0.0;
+                m_pl1.SetPointAt(0, pts1[0]);
+                m_pl1.SetPointAt(1, pts1[1]);
+                m_pl1.SetPointAt(2, pts1[2]);
+                m_pl1.SetPointAt(3, pts1[3]);
+
+                m_pl2.Normal = Vector3d.ZAxis;
+                m_pl2.Elevation = 0.0;
+                m_pl2.SetPointAt(0, pts2[0]);
+                m_pl2.SetPointAt(1, pts2[1]);
+                m_pl2.SetPointAt(2, pts2[2]);
+                m_pl2.SetPointAt(3, pts2[3]);
+                m_pl2.SetPointAt(4, pts2[4]);
+                m_pl2.SetPointAt(5, pts2[5]);
+                m_pl2.SetPointAt(6, pts2[6]);
+                m_pl2.SetPointAt(7, pts2[7]);
+                return SamplerStatus.OK;
+            }
+            return SamplerStatus.OK;
+        }
+
+        protected override bool WorldDraw(Autodesk.AutoCAD.GraphicsInterface.WorldDraw draw)
+        {
+            draw.Geometry.Draw(m_pl1);
+            draw.Geometry.Draw(m_pl2);
+            return true;
+        }
     }
 }
