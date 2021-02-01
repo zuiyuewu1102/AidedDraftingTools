@@ -28,9 +28,11 @@ namespace BF_CustomTools
         {
             string dataPath = "DataSource=" + Tools.GetCurrentPath() + "\\BaseData.db";
             SQLiteConnection con = new SQLiteConnection(dataPath);
-            SQLiteCommand cmd = new SQLiteCommand();
-            cmd.Connection = con;
-            cmd.CommandText = "select Thickness from MaterialTable Where Name = 'BasePlate'";
+            SQLiteCommand cmd = new SQLiteCommand
+            {
+                Connection = con,
+                CommandText = "select Thickness from MaterialTable Where Name = 'BasePlate'"
+            };
             con.Open();
             string t = cmd.ExecuteScalar().ToString();
             con.Close();

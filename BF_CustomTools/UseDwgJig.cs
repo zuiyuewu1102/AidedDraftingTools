@@ -451,4 +451,105 @@ namespace BF_CustomTools
             return true;
         }
     }
+
+    public class FanMenJig : DrawJig
+    {
+        public Polyline m_pl1, m_pl2, m_pl3, m_pl4, m_pl5;
+        //public BlockReference m_bRef;
+        private Point3d m_pt1, m_pt2;
+        //private Database db = Application.DocumentManager.MdiActiveDocument.Database;
+        public FanMenJig(Polyline pl1,Polyline pl2,Polyline pl3,Polyline pl4,Polyline pl5,Point3d spt)
+        {
+            m_pl1 = pl1;
+            m_pl2 = pl2;
+            m_pl3 = pl3;
+            m_pl4 = pl4;
+            m_pl5 = pl5;
+            //m_bRef = bRef;
+            m_pt1 = spt;
+            
+        }
+        protected override SamplerStatus Sampler(JigPrompts prompts)
+        {
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            Matrix3d mt = ed.CurrentUserCoordinateSystem;
+            //定义一个拖拽交互类
+            JigPromptPointOptions jppo = new JigPromptPointOptions("\n请指定门洞的对角点");
+            //光标类型
+            jppo.Cursor = CursorType.Crosshair;
+            //拖拽限制
+            jppo.UserInputControls =
+                UserInputControls.Accept3dCoordinates
+                | UserInputControls.NoZeroResponseAccepted
+                | UserInputControls.NoNegativeResponseAccepted;
+            //拖拽基点必须是WCS点
+            jppo.BasePoint = m_pt1.TransformBy(mt);
+            jppo.UseBasePoint = true;
+            //用AcquirePoint函数获得拖拽得到的即时点
+            PromptPointResult ppr = prompts.AcquirePoint(jppo);
+            Point3d tempPt = ppr.Value;
+            //拖拽取消
+            if (ppr.Status == PromptStatus.Cancel) return SamplerStatus.Cancel;
+            //拖拽
+            if (m_pt2 != tempPt)
+            {
+                m_pt2 = tempPt;
+                //将WCS点转化为UCS点
+                Point3d ucsPt2 = m_pt2.TransformBy(mt.Inverse());
+                //转换成最小点和最大点
+                Point3d minPt = new Point3d(Math.Min(m_pt1.X, ucsPt2.X), Math.Min(m_pt1.Y, ucsPt2.Y), 0);
+                Point3d maxPt = new Point3d(Math.Max(m_pt1.X, ucsPt2.X), Math.Max(m_pt1.Y, ucsPt2.Y), 0);
+                //更新m_pl1参数
+                m_pl1.Normal = Vector3d.ZAxis;
+                m_pl1.Elevation = 0.0;
+                m_pl1.SetPointAt(0, new Point2d(minPt.X + 2, minPt.Y + 4));
+                m_pl1.SetPointAt(1, new Point2d(minPt.X + 7, minPt.Y + 4));
+                m_pl1.SetPointAt(2, new Point2d(minPt.X + 7, maxPt.Y - 2));
+                m_pl1.SetPointAt(3, new Point2d(minPt.X + 2, maxPt.Y - 2));
+                //更新m_pl2参数
+                m_pl2.Normal = Vector3d.ZAxis;
+                m_pl2.Elevation = 0.0;
+                m_pl2.SetPointAt(0, new Point2d(maxPt.X - 2, minPt.Y + 4));
+                m_pl2.SetPointAt(1, new Point2d(maxPt.X - 7, minPt.Y + 4));
+                m_pl2.SetPointAt(2, new Point2d(maxPt.X - 7, maxPt.Y - 2));
+                m_pl2.SetPointAt(3, new Point2d(maxPt.X - 2, maxPt.Y - 2));
+                //更新m_pl3参数
+                m_pl3.Normal = Vector3d.ZAxis;
+                m_pl3.Elevation = 0.0;
+                m_pl3.SetPointAt(0, new Point2d(minPt.X + 7, minPt.Y + 4));
+                m_pl3.SetPointAt(1, new Point2d(minPt.X + 7, minPt.Y + 9));
+                m_pl3.SetPointAt(2, new Point2d(maxPt.X - 7, minPt.Y + 9));
+                m_pl3.SetPointAt(3, new Point2d(maxPt.X - 7, minPt.Y + 4));
+                //更新m_pl4参数
+                m_pl4.Normal = Vector3d.ZAxis;
+                m_pl4.Elevation = 0.0;
+                m_pl4.SetPointAt(0, new Point2d(minPt.X + 7, maxPt.Y - 7));
+                m_pl4.SetPointAt(1, new Point2d(minPt.X + 7, maxPt.Y - 2));
+                m_pl4.SetPointAt(2, new Point2d(maxPt.X - 7, maxPt.Y - 2));
+                m_pl4.SetPointAt(3, new Point2d(maxPt.X - 7, maxPt.Y - 7));
+                //更新m_pl5参数
+                m_pl5.Normal = Vector3d.ZAxis;
+                m_pl5.Elevation = 0.0;
+                m_pl5.SetPointAt(0, new Point2d(minPt.X + 2, maxPt.Y - 2));
+                m_pl5.SetPointAt(1, new Point2d((maxPt.X - minPt.X) / 2 + minPt.X, minPt.Y + 4));
+                m_pl5.SetPointAt(2, new Point2d(maxPt.X - 2, maxPt.Y - 2));
+                //更新bRef参数
+                //m_bRef.Position = new Point3d((ucsPt2.X - minPt.X) / 2 + minPt.X, ucsPt2.Y - 29, 0);
+                return SamplerStatus.OK;
+            }
+            else
+                return SamplerStatus.NoChange;
+        }
+
+        protected override bool WorldDraw(Autodesk.AutoCAD.GraphicsInterface.WorldDraw draw)
+        {
+            draw.Geometry.Draw(m_pl1);
+            draw.Geometry.Draw(m_pl2);
+            draw.Geometry.Draw(m_pl3);
+            draw.Geometry.Draw(m_pl4);
+            draw.Geometry.Draw(m_pl5);
+            //draw.Geometry.Draw(m_bRef);
+            return true; 
+        }
+    }
 }

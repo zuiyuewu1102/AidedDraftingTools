@@ -1660,40 +1660,68 @@ namespace BF_CustomTools
         public void FM()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
+            Database db = doc.Database;
             Editor ed = doc.Editor;
             ed.WriteMessage("\n[百福工具箱]——绘制柜台翻门");
-            Point3d pt1,pt2,spt, ept;
-            double mdw, fmw, fmh;
+            Point3d spt;
 
-            PromptPointOptions ppo1 = new PromptPointOptions("\n请输入起始点");
-            PromptPointResult ppr1 = ed.GetPoint(ppo1);
-            if (ppr1.Status == PromptStatus.OK)
+            PromptPointOptions ppo = new PromptPointOptions("\n请输入起始点");
+            PromptPointResult ppr = ed.GetPoint(ppo);
+            if (ppr.Status != PromptStatus.OK) return;
+            spt = ppr.Value;
+            //初始化边框
+            Polyline pl1 = new Polyline();
+            Polyline pl2 = new Polyline();
+            Polyline pl3 = new Polyline();
+            Polyline pl4 = new Polyline();
+            for (int i = 0; i < 4; i++)
             {
-                pt1 = ppr1.Value;
-                PromptPointOptions ppo2;
-                PromptPointResult ppr2;
-                do
-                {
-                    ppo2 = new PromptPointOptions("\n请输入对焦点")
-                    {
-                        UseBasePoint = true,
-                        BasePoint = pt1
-                    };
-                    ppr2 = ed.GetCorner(ppo2);
-                } while (ppr2.Status != PromptStatus.OK);
-                pt2 = ppr2.Value;
-                spt = new Point3d(Math.Min(pt1.X, pt2.X), Math.Min(pt1.Y, pt2.Y), 0);
-                ept = new Point3d(Math.Max(pt1.X, pt2.X), Math.Max(pt1.Y, pt2.Y), 0);
-                mdw = ept.X - spt.X;
-                fmh = ept.Y - spt.Y - 5;
-                //根据门洞长度确定立柱、翻门数量和计算翻门长度
-                if (mdw < 1200)
-                {
-
-                }
+                pl1.AddVertexAt(i, Point2d.Origin, 0, 0, 0);
+                pl2.AddVertexAt(i, Point2d.Origin, 0, 0, 0);
+                pl3.AddVertexAt(i, Point2d.Origin, 0, 0, 0);
+                pl4.AddVertexAt(i, Point2d.Origin, 0, 0, 0);
             }
-
-            
+            pl1.Closed = true;
+            pl2.Closed = true;
+            pl3.Closed = true;
+            pl4.Closed = true;
+            pl1.Layer = "BF-铝材";
+            pl2.Layer = "BF-铝材";
+            pl3.Layer = "BF-铝材";
+            pl4.Layer = "BF-铝材";
+            //初始化翻门线
+            Polyline pl5 = new Polyline();
+            for (int i = 0; i < 3; i++)
+            {
+                pl5.AddVertexAt(i, Point2d.Origin, 0, 0, 0);
+            }
+            pl5.Layer = "BF-虚线";
+            //初始化翻门锁
+            try
+            {
+                string blkName = "自关锁";
+                string blkPath = Tools.GetCurrentPath() + @"\BaseDwgs\常用图块.dwg";
+                db.ImportBlocksFromDWG(blkPath, blkName);
+            }
+            catch (System.Exception ex)
+            {
+                ed.WriteMessage(ex.Message.ToString());
+                return;
+            }
+            //BlockReference bRef = new BlockReference(Point3d.Origin, ObjectId.Null);
+            //实例化一个FanMenJig类
+            FanMenJig fanMenJig = new FanMenJig(pl1, pl2, pl3, pl4, pl5, spt);
+            //拖拽
+            PromptResult resJig = ed.Drag(fanMenJig);
+            if (resJig.Status == PromptStatus.OK)
+            {
+                Tools.AddToModelSpace(db, pl1);
+                Tools.AddToModelSpace(db, pl2);
+                Tools.AddToModelSpace(db, pl3);
+                Tools.AddToModelSpace(db, pl4);
+                Tools.AddToModelSpace(db, pl5);
+                //Tools.AddToCurrentSpace(db, bRef);
+            }
         }
 
         //绘制柜腿
@@ -1727,7 +1755,7 @@ namespace BF_CustomTools
                 else
                 {
                     blkname += "DS";
-                }                
+                }
             }
 
             //输入块参照插入的点
