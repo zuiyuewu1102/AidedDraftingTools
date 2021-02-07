@@ -1724,6 +1724,43 @@ namespace BF_CustomTools
             }
         }
 
+        [CommandMethod("KD")]
+        public void KD()
+        {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
+            ed.WriteMessage("\n[百福工具箱]——绘制墙洞");
+
+            PromptPointOptions ppo = new PromptPointOptions("\n请输入起始点");
+            PromptPointResult ppr = ed.GetPoint(ppo);
+            if (ppr.Status != PromptStatus.OK) return;
+            Point3d spt = ppr.Value;
+            //初始化边框和虚线
+            Polyline pl1 = new Polyline();
+            Polyline pl2 = new Polyline();
+            for (int i = 0; i < 4; i++)
+            {
+                pl1.AddVertexAt(i, Point2d.Origin, 0, 0, 0);
+            }
+            pl1.Closed = true;
+            for (int i = 0; i < 3; i++)
+            {
+                pl2.AddVertexAt(i, Point2d.Origin, 0, 0, 0);
+            }
+            pl2.Layer = "BF-虚线";
+            pl2.LinetypeScale = 2;
+            //实例化一个HoleonWallJig类
+            HoleonWallJig holeonWallJig = new HoleonWallJig(pl1, pl2, spt);
+            //拖拽
+            PromptResult resJig = ed.Drag(holeonWallJig);
+            if (resJig.Status == PromptStatus.OK)
+            {
+                Tools.AddToModelSpace(db, pl1);
+                Tools.AddToModelSpace(db, pl2);
+            }
+        }
+
         //绘制柜腿
         [CommandMethod("GT")]
         public void GT()
