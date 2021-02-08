@@ -1696,6 +1696,7 @@ namespace BF_CustomTools
                 pl5.AddVertexAt(i, Point2d.Origin, 0, 0, 0);
             }
             pl5.Layer = "BF-虚线";
+            pl5.LinetypeScale = 2;
             //初始化翻门锁
             try
             {
@@ -1708,19 +1709,45 @@ namespace BF_CustomTools
                 ed.WriteMessage(ex.Message.ToString());
                 return;
             }
-            //BlockReference bRef = new BlockReference(Point3d.Origin, ObjectId.Null);
-            //实例化一个FanMenJig类
-            FanMenJig fanMenJig = new FanMenJig(pl1, pl2, pl3, pl4, pl5, spt);
-            //拖拽
-            PromptResult resJig = ed.Drag(fanMenJig);
-            if (resJig.Status == PromptStatus.OK)
+
+            ObjectId blockRefId;
+
+            using (Transaction trans = db.TransactionManager.StartTransaction())
             {
-                Tools.AddToModelSpace(db, pl1);
-                Tools.AddToModelSpace(db, pl2);
-                Tools.AddToModelSpace(db, pl3);
-                Tools.AddToModelSpace(db, pl4);
-                Tools.AddToModelSpace(db, pl5);
-                //Tools.AddToCurrentSpace(db, bRef);
+                ObjectId spaceId = db.CurrentSpaceId;
+                //打开块表
+                BlockTable bt = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForRead);                
+                //以写的方式打开空间（模型空间或图纸空间）
+                BlockTableRecord space = (BlockTableRecord)spaceId.GetObject(OpenMode.ForWrite);
+                //创建一个块参照并设置插入点
+                BlockReference bRef = new BlockReference(Point3d.Origin, bt["自关锁"])
+                {
+                    //设置块参照的缩放比例
+                    ScaleFactors = new Scale3d(1.0),
+                    //设置块参照的层名
+                    Layer ="BF-细线",
+                    //设置块参照的旋转角度
+                    Rotation = 0.0
+                };
+
+                //实例化一个FanMenJig类
+                FanMenJig fanMenJig = new FanMenJig(pl1, pl2, pl3, pl4, pl5, spt, bRef);
+                //拖拽
+                PromptResult resJig = ed.Drag(fanMenJig);
+                if (resJig.Status == PromptStatus.OK)
+                {
+                    Tools.AddToModelSpace(db, pl1);
+                    Tools.AddToModelSpace(db, pl2);
+                    Tools.AddToModelSpace(db, pl3);
+                    Tools.AddToModelSpace(db, pl4);
+                    Tools.AddToModelSpace(db, pl5);
+                    //在空间中加入创建的块参照
+                    blockRefId = space.AppendEntity(bRef);
+                    //通知事务处理加入创建的块参照
+                    db.TransactionManager.AddNewlyCreatedDBObject(bRef, true);
+                }
+                space.DowngradeOpen();
+                trans.Commit();
             }
         }
 

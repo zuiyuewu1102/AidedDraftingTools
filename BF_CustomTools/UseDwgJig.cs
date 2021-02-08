@@ -33,7 +33,7 @@ namespace BF_CustomTools
     {
         public double m_t;
         public Point3d m_peakPt;
-        private Point2d[] m_pts = new Point2d[4];
+        private readonly Point2d[] m_pts = new Point2d[4];
         public JiaCengBanJig(Point3d spt,Point3d ept,double t):base(new Polyline())
         {
             m_t = t;
@@ -113,7 +113,7 @@ namespace BF_CustomTools
     {
         public double m_t;
         public Point3d m_peakPt;
-        private Point2d[] m_pts = new Point2d[8];
+        private readonly Point2d[] m_pts = new Point2d[8];
         public BoLiJig(Point3d spt, Point3d ept, double t) : base(new Polyline())
         {
             m_t = t;
@@ -232,7 +232,7 @@ namespace BF_CustomTools
     {
         public double m_t;
         public Point3d m_peakPt;
-        private Point2d[] m_pts = new Point2d[6];
+        private readonly Point2d[] m_pts = new Point2d[6];
         public ShiTouBanJig(Point3d spt, Point3d ept, double t) : base(new Polyline())
         {
             m_t = t;
@@ -323,7 +323,7 @@ namespace BF_CustomTools
     {
         public Polyline m_pl1, m_pl2;
         private Point3d m_peakPt;
-        private double m_t;
+        private readonly double m_t;
         public Point3d m_spt, m_ept;
         public Point2d[] pts1 = new Point2d[4];
         public Point2d[] pts2 = new Point2d[8];
@@ -338,7 +338,7 @@ namespace BF_CustomTools
         }
         protected override SamplerStatus Sampler(JigPrompts prompts)
         {
-            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            //Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             //Matrix3d mt = ed.CurrentUserCoordinateSystem;
             JigPromptPointOptions jppo = new JigPromptPointOptions("\n移动鼠标确定翻转方向")
             {
@@ -455,17 +455,17 @@ namespace BF_CustomTools
     public class FanMenJig : DrawJig
     {
         public Polyline m_pl1, m_pl2, m_pl3, m_pl4, m_pl5;
-        //public BlockReference m_bRef;
+        public BlockReference m_bRef;
         private Point3d m_pt1, m_pt2;
         //private Database db = Application.DocumentManager.MdiActiveDocument.Database;
-        public FanMenJig(Polyline pl1,Polyline pl2,Polyline pl3,Polyline pl4,Polyline pl5,Point3d spt)
+        public FanMenJig(Polyline pl1,Polyline pl2,Polyline pl3,Polyline pl4,Polyline pl5,Point3d spt,BlockReference bRef)
         {
             m_pl1 = pl1;
             m_pl2 = pl2;
             m_pl3 = pl3;
             m_pl4 = pl4;
             m_pl5 = pl5;
-            //m_bRef = bRef;
+            m_bRef = bRef;
             m_pt1 = spt;
             
         }
@@ -474,17 +474,19 @@ namespace BF_CustomTools
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             Matrix3d mt = ed.CurrentUserCoordinateSystem;
             //定义一个拖拽交互类
-            JigPromptPointOptions jppo = new JigPromptPointOptions("\n请指定门洞的对角点");
-            //光标类型
-            jppo.Cursor = CursorType.Crosshair;
-            //拖拽限制
-            jppo.UserInputControls =
+            JigPromptPointOptions jppo = new JigPromptPointOptions("\n请指定门洞的对角点")
+            {
+                //光标类型
+                Cursor = CursorType.Crosshair,
+                //拖拽限制
+                UserInputControls =
                 UserInputControls.Accept3dCoordinates
                 | UserInputControls.NoZeroResponseAccepted
-                | UserInputControls.NoNegativeResponseAccepted;
-            //拖拽基点必须是WCS点
-            jppo.BasePoint = m_pt1.TransformBy(mt);
-            jppo.UseBasePoint = true;
+                | UserInputControls.NoNegativeResponseAccepted,
+                //拖拽基点必须是WCS点
+                BasePoint = m_pt1.TransformBy(mt),
+                UseBasePoint = true
+            };
             //用AcquirePoint函数获得拖拽得到的即时点
             PromptPointResult ppr = prompts.AcquirePoint(jppo);
             Point3d tempPt = ppr.Value;
@@ -534,7 +536,7 @@ namespace BF_CustomTools
                 m_pl5.SetPointAt(1, new Point2d((maxPt.X - minPt.X) / 2 + minPt.X, minPt.Y + 4));
                 m_pl5.SetPointAt(2, new Point2d(maxPt.X - 2, maxPt.Y - 2));
                 //更新bRef参数
-                //m_bRef.Position = new Point3d((ucsPt2.X - minPt.X) / 2 + minPt.X, ucsPt2.Y - 29, 0);
+                m_bRef.Position = new Point3d((maxPt.X - minPt.X) / 2 + minPt.X, maxPt.Y - 29, 0);
                 return SamplerStatus.OK;
             }
             else
@@ -548,7 +550,7 @@ namespace BF_CustomTools
             draw.Geometry.Draw(m_pl3);
             draw.Geometry.Draw(m_pl4);
             draw.Geometry.Draw(m_pl5);
-            //draw.Geometry.Draw(m_bRef);
+            draw.Geometry.Draw(m_bRef);
             return true; 
         }
     }
@@ -568,17 +570,19 @@ namespace BF_CustomTools
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             Matrix3d mt = ed.CurrentUserCoordinateSystem;
             //定义一个拖拽交互类
-            JigPromptPointOptions jppo = new JigPromptPointOptions("\n请指定墙洞的对角点");
-            //光标类型
-            jppo.Cursor = CursorType.Crosshair;
-            //拖拽限制
-            jppo.UserInputControls =
+            JigPromptPointOptions jppo = new JigPromptPointOptions("\n请指定墙洞的对角点")
+            {
+                //光标类型
+                Cursor = CursorType.Crosshair,
+                //拖拽限制
+                UserInputControls =
                 UserInputControls.Accept3dCoordinates
                 | UserInputControls.NoZeroResponseAccepted
-                | UserInputControls.NoNegativeResponseAccepted;
-            //拖拽基点必须是WCS点
-            jppo.BasePoint = m_pt1.TransformBy(mt);
-            jppo.UseBasePoint = true;
+                | UserInputControls.NoNegativeResponseAccepted,
+                //拖拽基点必须是WCS点
+                BasePoint = m_pt1.TransformBy(mt),
+                UseBasePoint = true
+            };
             //用AcquirePoint函数获得拖拽得到的即时点
             PromptPointResult ppr = prompts.AcquirePoint(jppo);
             Point3d tempPt = ppr.Value;
