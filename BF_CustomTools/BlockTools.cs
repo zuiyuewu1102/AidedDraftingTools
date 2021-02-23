@@ -277,24 +277,35 @@ namespace BF_CustomTools
             PromptPointResult ppr = ed.GetPoint("\n请选择插入点");
             Point3d pt = ppr.Value;
             //从外部DWG文件中插入图块
-            //BlockTools.ImportBlocksFromDWG(xckPath, db);
             db.ImportBlocksFromDWG(xckPath, xcbh);
-
+            ObjectId blockRefId;
             using (Transaction trans = db.TransactionManager.StartTransaction())
             {
-                BlockTable bt = trans.GetObject(db.BlockTableId, OpenMode.ForRead) as BlockTable;
-                BlockTableRecord btr = trans.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-                if (bt.Has(xcbh))
+                ObjectId spaceId = db.CurrentSpaceId;
+                //打开块表
+                BlockTable bt = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForRead);
+                //以写的方式打开空间（模型空间或图纸空间）
+                BlockTableRecord space = (BlockTableRecord)spaceId.GetObject(OpenMode.ForWrite);
+                //创建一个块参照并设置插入点
+                BlockReference bRef = new BlockReference(Point3d.Origin, bt[xcbh])
                 {
-                    using (BlockReference brf = new BlockReference(pt, bt[xcbh]))
-                    {
-                        btr.AppendEntity(brf);
-                        trans.AddNewlyCreatedDBObject(brf, true);
-                    }
-                }
-                else
+                    //设置块参照的缩放比例
+                    ScaleFactors = new Scale3d(1.0),
+                    //设置块参照的层名
+                    Layer = "BF-铝材",
+                    //设置块参照的旋转角度
+                    Rotation = 0.0
+                };
+                //实例化一个LiXingCai类
+                LiXingCai liXingCai = new LiXingCai(bRef,Point3d.Origin);
+                //拖拽
+                PromptResult resJig = ed.Drag(liXingCai);
+                if (resJig.Status == PromptStatus.OK)
                 {
-                    ed.WriteMessage("\n未在图库中找到图块" + xcbh);
+                    //在空间中加入创建的块参照
+                    blockRefId = space.AppendEntity(bRef);
+                    //通知事务处理加入创建的块参照
+                    trans.AddNewlyCreatedDBObject(bRef, true);
                 }
                 trans.Commit();
             }

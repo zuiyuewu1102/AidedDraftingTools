@@ -1744,7 +1744,7 @@ namespace BF_CustomTools
                     //在空间中加入创建的块参照
                     blockRefId = space.AppendEntity(bRef);
                     //通知事务处理加入创建的块参照
-                    db.TransactionManager.AddNewlyCreatedDBObject(bRef, true);
+                    trans.AddNewlyCreatedDBObject(bRef, true);
                 }
                 space.DowngradeOpen();
                 trans.Commit();

@@ -319,7 +319,7 @@ namespace BF_CustomTools
         }        
     }
 
-    public class PiGeBanJig : DrawJig
+    class PiGeBanJig : DrawJig
     {
         public Polyline m_pl1, m_pl2;
         private Point3d m_peakPt;
@@ -452,7 +452,7 @@ namespace BF_CustomTools
         }
     }
 
-    public class FanMenJig : DrawJig
+    class FanMenJig : DrawJig
     {
         public Polyline m_pl1, m_pl2, m_pl3, m_pl4, m_pl5;
         public BlockReference m_bRef;
@@ -555,7 +555,7 @@ namespace BF_CustomTools
         }
     }
 
-    public class HoleonWallJig : DrawJig
+    class HoleonWallJig : DrawJig
     {
         public Polyline m_pl1, m_pl2;
         private Point3d m_pt1, m_pt2;
@@ -621,6 +621,56 @@ namespace BF_CustomTools
             draw.Geometry.Draw(m_pl1);
             draw.Geometry.Draw(m_pl2);
             return true;
+        }
+    }
+
+    class LiXingCai : DrawJig
+    {
+        private Point3d m_pt;
+        public BlockReference m_bRef;
+
+        public LiXingCai(BlockReference bRef,Point3d pt)
+        {
+            m_pt = pt;
+            m_bRef = bRef;
+        }
+
+        protected override bool WorldDraw(Autodesk.AutoCAD.GraphicsInterface.WorldDraw draw)
+        {
+            draw.Geometry.Draw(m_bRef);
+            return true;
+        }
+
+        protected override SamplerStatus Sampler(JigPrompts prompts)
+        {
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            Matrix3d mt = ed.CurrentUserCoordinateSystem;
+            //定义一个拖拽交互类
+            JigPromptPointOptions jppo = new JigPromptPointOptions("\n请指定插入点");
+            
+            //用AcquirePoint函数获得拖拽得到的即时点
+            PromptPointResult ppr = prompts.AcquirePoint(jppo);
+            Point3d tempPt = ppr.Value;
+            //拖拽取消
+            if (ppr.Status == PromptStatus.Cancel) return SamplerStatus.Cancel;
+            //拖拽
+            //将WCS点转化为UCS点
+            Point3d ucsPt2 = tempPt.TransformBy(mt.Inverse());
+            //更新bRef参数
+            m_bRef.Position = ucsPt2;
+            return SamplerStatus.OK;
+
+            //if (m_pt != tempPt)
+            //{
+            //    m_pt = tempPt;
+            //    //将WCS点转化为UCS点
+            //    Point3d ucsPt2 = m_pt.TransformBy(mt.Inverse());
+            //    //更新bRef参数
+            //    m_bRef.Position = ucsPt2;
+            //    return SamplerStatus.OK;
+            //}
+            //else
+            //    return SamplerStatus.NoChange;
         }
     }
 }
