@@ -271,11 +271,11 @@ namespace BF_CustomTools
                 AllowSpaces = false
             };
             PromptResult xcbhpr = ed.GetString(pso);
-
+            if (xcbhpr.Status != PromptStatus.OK) return;
             string xcbh = "LC" + xcbhpr.StringResult;
             //输入块参照插入的点
-            PromptPointResult ppr = ed.GetPoint("\n请选择插入点");
-            Point3d pt = ppr.Value;
+            //PromptPointResult ppr = ed.GetPoint("\n请选择插入点");
+            //Point3d pt = ppr.Value;
             //从外部DWG文件中插入图块
             db.ImportBlocksFromDWG(xckPath, xcbh);
             ObjectId blockRefId;

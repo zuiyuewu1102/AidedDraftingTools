@@ -626,7 +626,7 @@ namespace BF_CustomTools
 
     class LiXingCai : DrawJig
     {
-        private Point3d m_pt;
+        public Point3d m_pt;
         public BlockReference m_bRef;
 
         public LiXingCai(BlockReference bRef,Point3d pt)
@@ -659,18 +659,6 @@ namespace BF_CustomTools
             //更新bRef参数
             m_bRef.Position = ucsPt2;
             return SamplerStatus.OK;
-
-            //if (m_pt != tempPt)
-            //{
-            //    m_pt = tempPt;
-            //    //将WCS点转化为UCS点
-            //    Point3d ucsPt2 = m_pt.TransformBy(mt.Inverse());
-            //    //更新bRef参数
-            //    m_bRef.Position = ucsPt2;
-            //    return SamplerStatus.OK;
-            //}
-            //else
-            //    return SamplerStatus.NoChange;
         }
     }
 }
